@@ -7,8 +7,8 @@ Workflow Orchestration using Quartz.Net as internal scheduler to make
 #### Version 1 Tasks
 * [ ] .Net Framework Support
 * [ ] General Queue Handler for servier side messaging
-..* [ ] Inbound
-..* [ ] Outbound
+  * [ ] Inbound
+  * [ ] Outbound
 * [ ] Quartz Setup
 * [ ] Quartzman Integration
 * [ ] Nuget Release
