@@ -10,6 +10,7 @@ Workflow Orchestration
   * Inbound
   * Outbound
 * Quartz Setup
+* Quartzman Integration
 * Nuget Release
 
 #### Version 2 or more
@@ -23,4 +24,5 @@ Workflow Orchestration
 * npm release
 
 #### Version 2 or more
-
+* Javascript Workflow designer
+* Online Script Editor
