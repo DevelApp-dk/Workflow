@@ -19,6 +19,8 @@ Workflow Orchestration using Quartz.Net as internal scheduler to make is easier 
 * [ ] .Net Core Support
 * [ ] Plugin support with loader
 * [ ] Multi tenant support
+* [ ] Subflow handling
+* [ ] Documentation creation
 * [ ] Quartz IJobStore hybrid store InMemory with persist possibility
 * [ ] Quartzmin IJob dll upload and handling
 * [ ] Include JavaScript in Nuget
