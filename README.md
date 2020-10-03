@@ -1,5 +1,5 @@
 # Workflow
-Workflow Orchestration using Quartz.Net as internal scheduler to make
+Workflow Orchestration using Quartz.Net as internal scheduler to make is easier to created uncoupled workflow with frontend, automation and integration
 
 ## Roadmap
 
@@ -18,7 +18,8 @@ Workflow Orchestration using Quartz.Net as internal scheduler to make
 * [ ] Plugin support with loader
 * [ ] Multi tenant support
 * [ ] Quartz IJobStore hybrid store InMemory with persist possibility
-* [ ] Quartzmin Ijob dll upload and handling
+* [ ] Quartzmin IJob dll upload and handling
+* [ ] Include JavaScript in Nuget
 
 ### Frontend
 #### Version 1 Tasks
