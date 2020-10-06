@@ -6,21 +6,21 @@ Workflow Orchestration using Quartz.Net as internal scheduler to make is easier 
 ## Reasoning and definitions
 When making selfservice applications, integrations and automations there is a high need to expose program flow for business users as application of business rules requires ability to reason about program flow without need for programming abilities for the business users.
 Workflow is based on a mix of flow based programming and executable statecharts (orchistration of the individual workflows and the tasks in the workflow). 
-* Flow based programming: In short flow based programming is a clear separation of control of flow and specific tasks in the flow making it easier to follow the flow and reason about the flow with non-software developers. 
+* Flow based programming: In short flow based programming is a clear separation of control of flow and specific tasks in the flow making it easier to follow the flow and reason about the flow with non-software developers. Invented by J. Paul Morrison in early 1970s. 
 * Statecharts: Statecharts is statemachines that support parallel and substate execution. Statecharts used is a subform of [SCXML](https://www.w3.org/TR/scxml/) which I call a sharable statechart where the specific actions are specified but not containing specific functions because that is programming handling more than flow and seems to muddle the ability to reason on the flow. The statecharts are used to execute the flow providing a "As Implemented" documentation of the program flow. Frontend definitions of workflows are delivered as XState defined statecharts.
 * Workflow: Workflows are sometimes called orchistrations especially in Service Broker implementations. A Workflow composed of Steps and Transitions. The individual workflows can be triggered by a timed schedule or by interaction. The workflow defines the retetion period of the Saga data
 * Step: Each step is specifying a specific handling based on the step properties and types. Each state uses a state action which is an object with one or more functions within defined by an interface to the statetype
   * Steptypes:
     * Automatic: Running without user interaction. Has three functions: [OnEntry], [Execute] and [OnExit].
     * User interaction: Running with user interaction. Has four backend functions: [OnEntry], [CreateOutputData], [ValidateInput] and [OnExit] and on the frontend step handles the step execution based on output data and input data. The format of the input and output data is defined based on Json Schema making it easy to autogenerate and validate both on backend and on frontend. After the [CreateOutput] function is run the backend suspends the execution and a message based on SagaStep is sent to the frontend. When a message is received from the frontend Json Schema validation is run on the message form and if passing the [ValidateInputData] is run to make the backend validation on the message content. If all validation is passed the state transition is done based on the Outcome decided in the frontend and a message is sendt to the frontend that transition for the next state is allowed. If one validation fails a message is sent to the user interface and the SagaStep is updated.
-    * Subworkflow: Initiates one or more sub workflows. Has ? functions: [OnEntry], [StartSubWorkflows], [MergeSubWorkflows] and [OnExit]
+    * Subworkflow: Initiates one or more sub workflows. Has four functions: [OnEntry], [StartSubWorkflows], [MergeSubWorkflows] and [OnExit]
   * Step Action: Individual executable code parts based on step types. This is made with .Net code but it would also be possible to expand with other languages
     * [OnEntry] for guard functionality and preprocessing
-    * [Execute] for main execution responsible for deciding Outcome
+    * [Execute] for main execution responsible for deciding Output
     * [CreateOutputData] for preparing the output to the user interface
-    * [ValidateInputData] validates the message content based on the selected Outcome
+    * [ValidateInputData] validates the message content based on the selected Output
     * [StartSubWorkflows] schedules or starts one or more workflows with start data and notes on the subflow saga which saga initiated the subflow to make  
-    * [MergeSubWorkflows] is called when all the subflows have completed (either run to Outcome Complete or in Outcome Error) or when a timeout occured
+    * [MergeSubWorkflows] is called when all the subflows have completed (either run to Output Complete or in Output Error) or when a timeout occured
     * [OnExit] for post processing typically Saga update
 * Transition: A transition is a connection between two Steps. One Steps Output is connected to another Step
 * Saga: A sage is normally a long running transaction. Here the responsibility is for handling the data of the workflow instance. It is comprised of a ordered list of SagaSteps. The last step shows the current Step of the Workflow instance.
