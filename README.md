@@ -1,5 +1,5 @@
 # Workflow
-Workflow Orchestration using Quartz.Net as internal scheduler to make is easier to created uncoupled workflow with frontend, automation and integration
+This is a new architecture for RITA with adding orchestration to the task handling. Workflow uses Quartz.Net as internal scheduler like RITA to make is easier to created uncoupled workflow with frontend, automation and integration
 
 ## Features
 
