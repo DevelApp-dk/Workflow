@@ -34,6 +34,8 @@ This is a new architecture for RITA with adding orchestration to the task handli
 * Function
 * Saga
 
+! Consider HOCON instead of Json because of the added possibility for comments in the Json data
+
 
 ## Reasoning and definitions (review pending bsed on execution engine change)
 When making selfservice applications, integrations and automations there is a high need to expose program flow for business users as application of business rules requires ability to reason about program flow without need for programming abilities for the business users.
