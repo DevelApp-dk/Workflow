@@ -1,9 +1,43 @@
 # Workflow
-This is a new architecture for RITA with adding orchestration to the task handling. Workflow uses Quartz.Net as internal scheduler like RITA to make is easier to created uncoupled workflow with frontend, automation and integration
+This is a new architecture for RITA with adding orchestration to the task handling. Internally the execution engine is akka.net to handle all concurrency in a better way. For getting scheduled tasks to work Quartz.Net integration is used. The aim is to make is easier to created uncoupled workflow with frontend, automation and integration. Compared to RITA frontend is covered covered and as well as a "distributed by design" approach for hybrid installations. Orleans was rejected (instead of akka.net) due to very high level abstraction which was very difficult to align to this framework.
 
 ## Features
 
-## Reasoning and definitions
+## Execution engine and flow
+* DataOwner is a separation based on tenants in multi-tenant system as an organizational root. When request comes in the DataOwner is determined. It can be based on the website or other systems such as Api key lookup.
+  * Data: None
+  * Execution: None
+  * Responsibility: Tenant in multi-tenant system
+  * Design-time: Simple add and remove
+  * Activation Strategy: Load all on start
+* Module is a sub-organization of data and responsibility below DataOwner
+  * Data: Other required modules and holding sales grouping
+  * Execution: Is a broker for accessing other module resources as well as internal resources
+  * Responsibility: Broker
+  * Design-time: Versioned module level code-generation based on self and owned schemas, functions
+  * Activation Strategy: Load all on start
+* Schema is the data definition used for message, configuration and translation definitions 
+  * Data: Schema in JsonSchema
+  * Execution: Validate messages, configuration and translation
+  * Responsibility: Data structure validation
+  * Design-time: Special designer
+  * Activation Strategy: Load all used in translations and configuration and else load on request and cache
+* Configuration is places to hold configuration and define what can be stored based on JsonSchema
+  * Data: Configuration in Json
+  * Execution: Configuration used in module
+  * Responsibility: Holding configuration values
+  * Design-time: Designer based on Json Schema
+  * Activation Strategy: Load all on start
+* Language
+* Translation
+* Workflow
+* Function
+* Saga
+
+! Consider HOCON instead of Json because of the added possibility for comments in the Json data
+
+
+## Reasoning and definitions (review pending bsed on execution engine change)
 When making selfservice applications, integrations and automations there is a high need to expose program flow for business users as application of business rules requires ability to reason about program flow without need for programming abilities for the business users.
 Workflow is based on a mix of flow based programming and executable statecharts (orchistration of the individual workflows and the tasks in the workflow). 
 * Flow based programming: In short flow based programming is a clear separation of control of flow and specific tasks in the flow making it easier to follow the flow and reason about the flow with non-software developers. Invented by J. Paul Morrison in early 1970s. 
@@ -43,7 +77,7 @@ Workflow is based on a mix of flow based programming and executable statecharts 
 * Makes it easier to split execution either based on entire workflow or individual states and their functions. In microservices logic the split would be to have each individual state handling as a specific microservice
 * Deceasing the risk of bloated workflows which reduces maintainability of the code as it is easy to chain states/functions in a one or more subflows
 
-## Roadmap
+## Roadmap (deprecated because of architectural decision to move execution engine to Akka.net)
 
 ### Backend
 #### Version 1 Tasks
