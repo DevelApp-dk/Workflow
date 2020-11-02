@@ -3,11 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Copyright>Copyright © 2020</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Company>DevelApp Denmark (CVR 33211740)</Company>
     <Authors>Lars Shakya Buch-Jepsen</Authors>
+    <PackageId>DevelApp.Workflow.Core</PackageId>
+    <Product>DevelApp.Workflow.Core</Product>
+    <Description>Interfaces for DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy to handle workflows</Description>
   </PropertyGroup>
 
   <ItemGroup>
