@@ -1,0 +1,17 @@
+- Nuget of Workflow 
+- Nuget of Workflow.Core
+- Workflow.Test upgrade to .Net 5
+- Workflow.WorkflowDesigner in plain Typescript on npm using Workflow.DataService.Js. Responsible for designing and displaying workflows.
+- Workflow.DataDesigner in plain Typescript on npm using Workflow.DataService.Js. Responsible for designing and displaying JsonSchema
+- Workflow.Configuration in plain Typescript on npm using Workflow.DataService.Js. Responsible for creating, updateing and deleting configuration with each configuration setting defined by JsonSchema
+- Workflow.Translation in plain Typescript on npm using Workflow.DataService.Js. Repsonsible for language support based on JsonSchema data
+- Workflow.StateBehaviorDesigner in plain Typescript on npm using Workflow.DataService.Js and Blockly (does it make sense? perhaps for simple behaviors)
+- Workflow.AppServer in .Net 5. Responsible for using Workflow and hosting workflows. Exposes an OpenApi, GraphQL and OData interface. Other webservers can subscribe to webhooks on controller webhook or via SignalR.
+- Workflow.Admin in .Net 5. Responsible for SignalR DataService and preprocessing React
+- Workflow.DataService.Js in plain TypeScript on npm. Responsible for talking to various dataservices
+- Workflow.Workflow in React TypeScript on npm
+- Workflow.DataService.Php in php with subscription to Workflow.AppServer via Webhooks or SignalR
+- Workflow.DataService.DotNet with subscription to Workflow.AppServer via Webhooks or SignalR
+- Wordpress plugin
+- Umbraco plugin
+- Workflow.Api.DotNet exposes an OpenApi, GraphQL and OData interface using Workflow.Appserver
