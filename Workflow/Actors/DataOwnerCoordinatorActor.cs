@@ -1,40 +1,20 @@
 ﻿using Manatee.Json;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Workflow.Actors
 {
     /// <summary>
-    /// Represents the individual sagas
+    /// Singleton parent of potentially multiple DataOwnerActor
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor
+    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor
     {
-        public Guid SagaId { get; }
-
-        public SagaActor(Guid sagaId = default)
-        {
-            if(sagaId == default)
-            {
-                SagaId = Guid.NewGuid();
-            }
-            else
-            {
-                SagaId = sagaId;
-            }
-        }
-
         protected override int Actor_Version
         {
             get
             {
                 return 1;
-            }
-        }
-
-        public override string PersistenceId
-        {
-            get
-            {
-                return SagaId.ToString();
             }
         }
 
