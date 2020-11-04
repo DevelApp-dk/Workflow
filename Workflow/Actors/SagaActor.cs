@@ -22,7 +22,7 @@ namespace Workflow.Actors
             }
         }
 
-        protected override int Actor_Version
+        protected override int ActorVersion
         {
             get
             {

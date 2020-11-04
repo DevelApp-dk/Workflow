@@ -7,7 +7,7 @@ namespace Workflow.Actors
 {
     public class WorkflowControllerActor : AbstractWorkflowActor
     {
-        protected override int Actor_Version
+        protected override int ActorVersion
         {
             get
             {

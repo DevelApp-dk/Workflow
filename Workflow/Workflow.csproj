@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="akka" Version="1.4.10" />
+    <PackageReference Include="Akka.Monitoring" Version="1.1.0" />
     <PackageReference Include="Akka.Persistence" Version="1.4.10" />
     <PackageReference Include="DevelApp.Workflow.Core" Version="1.0.2" />
     <PackageReference Include="DoubleLinkedDirectedGraph" Version="1.0.1" />

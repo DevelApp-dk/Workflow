@@ -1,4 +1,6 @@
-﻿using Akka.Persistence;
+﻿using Akka.Event;
+using Akka.Monitoring;
+using Akka.Persistence;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -10,33 +12,56 @@ namespace Workflow.Actors
     {
         private int _snapshotPerVersion;
         private int _persistsSinceLastSnapshot;
+        protected readonly ILoggingAdapter ActorLog = Logging.GetLogger(Context);
 
-        public AbstractPersistedWorkflowActor(int snapshotPerVersion = 1)
+        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 1)
         {
+            ActorInstance = actorInstance;
+
             _snapshotPerVersion = snapshotPerVersion;
 
             //Recover
-            Recover<JsonValue>(data => { RecoverPersistedWorkflowDataHandler(data); });
+            Recover<JsonValue>(data => {
+                ActorLog.Debug("{0} recovered data {1}", ActorId, data.ToString());
+                RecoverPersistedWorkflowDataHandler(data); 
+            });
 
             //Commands (like Receive)
-            Command<JsonValue>(message => { WorkflowMessageHandler(message); });
+            Command<JsonValue>(message => {
+                Context.IncrementMessagesReceived();
+                ActorLog.Debug("{0} received message {1}", ActorId, message.ToString());
+                WorkflowMessageHandler(message); 
+            });
 
             Command<SaveSnapshotSuccess>(success => {
+                ActorLog.Debug("SaveSnapshot succeeded for {0} so deleting messages until this snapshot", PersistenceId);
                 // soft-delete the journal up until the sequence # at
                 // which the snapshot was taken
                 DeleteMessages(success.Metadata.SequenceNr);
             });
 
-            //TODO Handle snapshot failue
-            //Command<SaveSnapshotFailure>(failure => {
-            //    failure.Cause;
-            //});
+            //Handle snapshot failue
+            Command<SaveSnapshotFailure>(failure =>
+            {
+                ActorLog.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
+            });
+        }
+
+        /// <summary>
+        /// Returns the unique actor id
+        /// </summary>
+        protected virtual string ActorId
+        {
+            get
+            {
+                return GetType().Name.Replace("Actor", "") + $"_{ActorVersion}_{ActorInstance}";
+            }
         }
 
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract int Actor_Version { get; }
+        protected abstract int ActorVersion { get; }
 
         /// <summary>
         /// Returns the persistant name as default. Override on 
@@ -45,8 +70,29 @@ namespace Workflow.Actors
         {
             get
             {
-                return GetType().Name.Replace("Actor", "") + $"_{Actor_Version}";
+                return ActorId;
             }
+        }
+
+        /// <summary>
+        /// Returns the actor instance
+        /// </summary>
+        protected int ActorInstance { get; }
+
+        /// <summary>
+        /// Increment Monitoring Actor Created
+        /// </summary>
+        protected override void PreStart()
+        {
+            Context.IncrementActorCreated();
+        }
+
+        /// <summary>
+        /// Increment Monitoring Actor Created
+        /// </summary>
+        protected override void PostStop()
+        {
+            Context.IncrementActorStopped();
         }
 
         /// <summary>
@@ -76,7 +122,7 @@ namespace Workflow.Actors
         /// <summary>
         /// Used for recovering from crash
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="data"></param>
         protected abstract void RecoverPersistedWorkflowDataHandler(JsonValue data);
 
         /// <summary>

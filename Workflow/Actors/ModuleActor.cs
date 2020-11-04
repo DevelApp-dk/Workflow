@@ -10,7 +10,7 @@ namespace Workflow.Actors
     /// </summary>
     public class ModuleActor : AbstractPersistedWorkflowActor
     {
-        protected override int Actor_Version
+        protected override int ActorVersion
         {
             get
             {

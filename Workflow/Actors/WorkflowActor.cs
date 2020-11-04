@@ -10,7 +10,7 @@ namespace Workflow.Actors
     /// </summary>
     public class WorkflowActor : AbstractPersistedWorkflowActor
     {
-        protected override int Actor_Version => throw new NotImplementedException();
+        protected override int ActorVersion => throw new NotImplementedException();
 
         protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
         {
