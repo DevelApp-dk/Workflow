@@ -11,6 +11,8 @@
     <PackageId>DevelApp.Workflow.Core</PackageId>
     <Product>DevelApp.Workflow.Core</Product>
     <Description>Interfaces for DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy to handle workflows</Description>
+    <AssemblyName>DevelApp.Workflow.Core</AssemblyName>
+    <RootNamespace>DevelApp.Workflow.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
+using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -11,17 +12,22 @@ namespace Workflow.Actors
 {
     public abstract class AbstractWorkflowActor: ReceiveActor
     {
-        protected readonly ILoggingAdapter ActorLog = Logging.GetLogger(Context);
+        protected readonly ILoggingAdapter Logger = Logging.GetLogger(Context);
 
         public AbstractWorkflowActor(int actorInstance = 1)
         {
             ActorInstance = actorInstance;
 
-            //Commands (like Receive)
             Receive<JsonValue>(message => {
                 Context.IncrementMessagesReceived();
-                ActorLog.Debug("{0} received message {1}", ActorId, message.ToString());
-                WorkflowMessageHandler(message); 
+                Logger.Debug("{0} received message {1}", ActorId, message.ToString());
+                WorkflowMessageHandler(message);
+            });
+
+            Receive<DeadletterHandlingMessage>(message => {
+                Context.IncrementMessagesReceived();
+                Logger.Debug("{0} received message {1}", ActorId, message.ToString());
+                DeadletterHandlingMessageHandler(message);
             });
         }
 
@@ -67,5 +73,14 @@ namespace Workflow.Actors
         /// </summary>
         /// <param name="message"></param>
         protected abstract void WorkflowMessageHandler(JsonValue message);
+
+        /// <summary>
+        /// Handles DeadletterHandlingMessage. Default is to log and ignore
+        /// </summary>
+        /// <param name="message"></param>
+        protected virtual void DeadletterHandlingMessageHandler(DeadletterHandlingMessage message)
+        {
+            Logger.Debug("{0} received message {1}", ActorId, message.ToString());
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
+using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Workflow.Actors
     {
         private int _snapshotPerVersion;
         private int _persistsSinceLastSnapshot;
-        protected readonly ILoggingAdapter ActorLog = Logging.GetLogger(Context);
+        protected readonly ILoggingAdapter Logger = Logging.GetLogger(Context);
 
         public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 1)
         {
@@ -22,19 +23,19 @@ namespace Workflow.Actors
 
             //Recover
             Recover<JsonValue>(data => {
-                ActorLog.Debug("{0} recovered data {1}", ActorId, data.ToString());
+                Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
                 RecoverPersistedWorkflowDataHandler(data); 
             });
 
             //Commands (like Receive)
             Command<JsonValue>(message => {
                 Context.IncrementMessagesReceived();
-                ActorLog.Debug("{0} received message {1}", ActorId, message.ToString());
+                Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 WorkflowMessageHandler(message); 
             });
 
             Command<SaveSnapshotSuccess>(success => {
-                ActorLog.Debug("SaveSnapshot succeeded for {0} so deleting messages until this snapshot", PersistenceId);
+                Logger.Debug("SaveSnapshot succeeded for {0} so deleting messages until this snapshot", PersistenceId);
                 // soft-delete the journal up until the sequence # at
                 // which the snapshot was taken
                 DeleteMessages(success.Metadata.SequenceNr);
@@ -43,7 +44,13 @@ namespace Workflow.Actors
             //Handle snapshot failue
             Command<SaveSnapshotFailure>(failure =>
             {
-                ActorLog.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
+                Logger.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
+            });
+
+            Command<DeadletterHandlingMessage>(message => {
+                Context.IncrementMessagesReceived();
+                Logger.Debug("{0} received message {1}", ActorId, message.ToString());
+                DeadletterHandlingMessageHandler(message);
             });
         }
 
@@ -130,5 +137,14 @@ namespace Workflow.Actors
         /// </summary>
         /// <param name="message"></param>
         protected abstract void WorkflowMessageHandler(JsonValue message);
+
+        /// <summary>
+        /// Handles DeadletterHandlingMessage. Default is to log and ignore
+        /// </summary>
+        /// <param name="message"></param>
+        protected virtual void DeadletterHandlingMessageHandler(DeadletterHandlingMessage message)
+        {
+            Logger.Debug("{0} received message {1}", ActorId, message.ToString());
+        }
     }
 }

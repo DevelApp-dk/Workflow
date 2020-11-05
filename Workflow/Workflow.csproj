@@ -11,6 +11,8 @@
     <Company>DevelApp Denmark (CVR 33211740)</Company>
     <Version>1.0.2</Version>
     <Copyright>Copyright © DevelApp 2020</Copyright>
+    <AssemblyName>DevelApp.Workflow</AssemblyName>
+    <RootNamespace>DevelApp.Workflow</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

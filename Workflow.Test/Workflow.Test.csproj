@@ -1,9 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>DevelApp.Workflow.Test</AssemblyName>
+
+    <Copyright>Copyright © DevelApp 2020</Copyright>
+
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+    <Description>Unit Tests for DevelApp.Workflow
+
+DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy to handle workflows</Description>
+
+    <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
+
+    <Company>DevelApp Denmark (CVR 33211740)</Company>
+
+    <Authors>Lars Shakya Buch-Jepsen</Authors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +31,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Workflow\Workflow.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
