@@ -27,5 +27,26 @@ namespace Workflow.Actors
         {
             throw new NotImplementedException();
         }
+        /// <summary>
+        /// Supervisory stategy for direct children with default handling
+        /// </summary>
+        /// <returns></returns>
+        protected override SupervisorStrategy SupervisorStrategy()
+        {
+            return new OneForOneStrategy(
+                maxNrOfRetries: 10,
+                withinTimeRange: TimeSpan.FromMinutes(1),
+                localOnlyDecider: ex =>
+                {
+                    //Local
+                    if (ex is ArithmeticException)
+                    {
+                        return Directive.Resume;
+                    }
+
+                    //Fallback to Default Stategy if not handled
+                    return Akka.Actor.SupervisorStrategy.DefaultStrategy.Decider.Decide(ex);
+                });
+        }
     }
 }

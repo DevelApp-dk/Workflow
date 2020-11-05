@@ -25,7 +25,7 @@ namespace Workflow.Actors
             });
 
             Receive<DeadletterHandlingMessage>(message => {
-                Context.IncrementMessagesReceived();
+                Context.IncrementCounter(nameof(DeadletterHandlingMessage));
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 DeadletterHandlingMessageHandler(message);
             });
