@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>DevelApp.Workflow.AutoFac</PackageId>
+    <Company>DevelApp Denmark (CVR 33211740)</Company>
+    <Authors>Lars Shakya Buch-Jepsen</Authors>
+    <Copyright>Copyright © DevelApp 2020</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
+    <Description>Setup for AutoFac for DevelApp.Workflow 
+
+DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy to handle workflows</Description>
+    <Product>DevelApp.Workflow.AutoFac</Product>
+    <AssemblyName>DevelApp.Workflow.AutoFac</AssemblyName>
+    <RootNamespace>DevelApp.Workflow.AutoFac</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Akka.DI.Autofac" Version="1.4.1" />
+    <PackageReference Include="develapp.workflow" Version="1.0.2" />
+  </ItemGroup>
+
+</Project>
