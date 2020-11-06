@@ -57,6 +57,13 @@ namespace Workflow.AutoFac
                 var workflowControllerCoordinatorActor = actorSystem.ActorOf(Props.Create(() => new WorkflowControllerCoordinatorActor()));
                 return () => workflowControllerCoordinatorActor;
             });
+
+            serviceCollection.AddSingleton<QuartzPersistentActorProvider>(provider =>
+            {
+                var actorSystem = provider.GetService<ActorSystem>();
+                var quartzPersistentActor = actorSystem.ActorOf(Props.Create(() => new QuartzPersistentActor()), "QuartzActor");
+                return () => quartzPersistentActor;
+            });
         }
 
         /// <summary>
