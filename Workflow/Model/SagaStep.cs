@@ -3,7 +3,7 @@ using Manatee.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Workflow.Core;
+using DevelApp.Workflow.Core;
 
 namespace DevelApp.Workflow.Model
 {
