@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Quartz.Actor;
 using DevelApp.Workflow.Actors;
 using DevelApp.Workflow.TopActorProviders;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,13 @@ namespace Workflow.AutoFac
                 var actorSystem = provider.GetService<ActorSystem>();
                 var workflowControllerCoordinatorActor = actorSystem.ActorOf(Props.Create(() => new WorkflowControllerCoordinatorActor()));
                 return () => workflowControllerCoordinatorActor;
+            });
+
+            serviceCollection.AddSingleton<QuartzPersistentActorProvider>(provider =>
+            {
+                var actorSystem = provider.GetService<ActorSystem>();
+                var quartzPersistentActor = actorSystem.ActorOf(Props.Create(() => new QuartzPersistentActor("QuartzScheduler")), "QuartzActor");
+                return () => quartzPersistentActor;
             });
         }
 
