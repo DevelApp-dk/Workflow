@@ -1,0 +1,4 @@
+- DI setup
+- Expect a Persisted Quartz Actor from DI https://github.com/akkadotnet/Akka.Quartz.Actor 
+- Expect a DI of used actors
+- Expect a monitoring

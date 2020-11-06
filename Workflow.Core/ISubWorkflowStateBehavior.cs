@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core
+namespace DevelApp.Workflow.Core
 {
     /// <summary>
     /// SubWorkflow progress the SagaStep throught the SagaStepState from Initiate via WaitForSubWorkflow to Evaluate

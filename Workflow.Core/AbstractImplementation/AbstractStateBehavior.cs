@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core.AbstractImplementation
+namespace DevelApp.Workflow.Core.AbstractImplementation
 {
     /// <summary>
     /// Placement of utility functions for all StateBehaviors

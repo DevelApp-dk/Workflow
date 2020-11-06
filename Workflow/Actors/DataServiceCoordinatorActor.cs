@@ -1,41 +1,21 @@
 ﻿using Akka.Actor;
 using Manatee.Json;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
     /// <summary>
-    /// Represents the individual sagas
+    /// Parent of the DataServiceControllerActor and several DataServiceWebhookActor
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor
+    public class DataServiceCoordinatorActor : AbstractPersistedWorkflowActor
     {
-        public Guid SagaId { get; }
-
-        public SagaActor(Guid sagaId = default)
-        {
-            if(sagaId == default)
-            {
-                SagaId = Guid.NewGuid();
-            }
-            else
-            {
-                SagaId = sagaId;
-            }
-        }
-
         protected override int ActorVersion
         {
             get
             {
                 return 1;
-            }
-        }
-
-        public override string PersistenceId
-        {
-            get
-            {
-                return SagaId.ToString();
             }
         }
 

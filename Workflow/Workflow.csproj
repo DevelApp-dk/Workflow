@@ -9,11 +9,16 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
     <Company>DevelApp Denmark (CVR 33211740)</Company>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
+    <Copyright>Copyright © DevelApp 2020</Copyright>
+    <AssemblyName>DevelApp.Workflow</AssemblyName>
+    <RootNamespace>DevelApp.Workflow</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="akka" Version="1.4.10" />
+    <PackageReference Include="Akka.Monitoring" Version="1.1.0" />
+    <PackageReference Include="Akka.Persistence" Version="1.4.10" />
     <PackageReference Include="DevelApp.Workflow.Core" Version="1.0.2" />
     <PackageReference Include="DoubleLinkedDirectedGraph" Version="1.0.1" />
     <PackageReference Include="Manatee.Json" Version="13.0.3" />

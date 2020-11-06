@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core
+namespace DevelApp.Workflow.Core
 {
     public interface ISagaStep
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Workflow.Core;
 
-namespace Workflow.Model
+namespace DevelApp.Workflow.Model
 {
     public class SagaStep:ISagaStep
     {

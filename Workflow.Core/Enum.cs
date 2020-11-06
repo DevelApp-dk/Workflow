@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core
+namespace DevelApp.Workflow.Core
 {
     /// <summary>
     /// Defines the state behavior in the Workflow Node

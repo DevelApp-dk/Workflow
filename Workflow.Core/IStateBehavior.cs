@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core
+namespace DevelApp.Workflow.Core
 {
     /// <summary>
     /// Defines the topmost interface on StateBehavior which is the executable part of a Workflow. This should not be implemented directly
