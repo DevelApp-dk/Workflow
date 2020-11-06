@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Holds a lookup for configuration

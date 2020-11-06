@@ -6,7 +6,6 @@ using DevelApp.Workflow.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Workflow.Actors;
 
 namespace DevelApp.Workflow.Actors
 {

@@ -2,7 +2,7 @@
 using Manatee.Json;
 using System;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Represents the individual sagas

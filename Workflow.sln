@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.AutoFac", "Workflo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflow.AppServer", "Workflow.AppServer\Workflow.AppServer.csproj", "{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonSchemaBuilder", "JsonSchemaBuilder\JsonSchemaBuilder.csproj", "{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

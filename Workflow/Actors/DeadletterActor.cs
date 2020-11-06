@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     public class DeadletterActor:ReceiveActor
     {

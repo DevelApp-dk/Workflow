@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Holds the active languages delegating to TranslationActor for the specific language

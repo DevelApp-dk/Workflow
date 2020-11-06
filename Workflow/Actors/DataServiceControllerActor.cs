@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     public class DataServiceControllerActor : AbstractWorkflowActor
     {

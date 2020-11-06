@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core.AbstractImplementation
+namespace DevelApp.Workflow.Core.AbstractImplementation
 {
     /// <summary>
     /// Convenience implementation of IAutomaticStateBehavior

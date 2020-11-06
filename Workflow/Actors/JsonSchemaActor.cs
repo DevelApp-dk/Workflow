@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Handles the jsonSchemas of the module

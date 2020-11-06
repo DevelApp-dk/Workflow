@@ -1,9 +1,10 @@
-﻿using Manatee.Json;
+﻿using Akka.Actor;
+using Manatee.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Actors
+namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Holds the module informaion ande acts as coordinator for the children
