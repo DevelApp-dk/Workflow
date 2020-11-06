@@ -1,31 +1,27 @@
-﻿using System;
+﻿using Manatee.Json.Schema;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DevelApp.Workflow.Core
+namespace DevelApp.Workflow.Core.AbstractImplementation
 {
     /// <summary>
-    /// Defines the topmost interface on StateBehavior which is the executable part of a Workflow. This should not be implemented directly
+    /// Placement of utility functions for all StateBehaviors
     /// </summary>
-    public interface IStateBehavior
+    public abstract class AbstractStateBehavior
     {
-        /// <summary>
-        /// Defines the specific state behavior used for casting
-        /// </summary>
-        StateBehaviorType BehaviorType { get; }
-
         /// <summary>
         /// SagaStep is gathering data for the SagaStep
         /// </summary>
         /// <param name="sagaStep"></param>
         /// <returns></returns>
-        bool Initiate(ISagaStep sagaStep);
+        public abstract bool Initiate(ISagaStep sagaStep);
 
         /// <summary>
         /// Evaluates the gathered data and decides on an outcome 
         /// </summary>
         /// <param name="sagaStep"></param>
         /// <returns></returns>
-        bool Evaluate(ISagaStep sagaStep);
+        public abstract bool Evaluate(ISagaStep sagaStep);
     }
 }

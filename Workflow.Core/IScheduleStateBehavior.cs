@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Workflow.Core
+namespace DevelApp.Workflow.Core
 {
     /// <summary>
     /// Schedule progress the SagaStep throught the SagaStepState from Initiate via WaitForSchedule to Evaluate. Schedule is persisted
