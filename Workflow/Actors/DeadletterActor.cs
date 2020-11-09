@@ -1,11 +1,10 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Monitoring;
-using DevelApp.Workflow.Model;
+using DevelApp.Workflow.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {

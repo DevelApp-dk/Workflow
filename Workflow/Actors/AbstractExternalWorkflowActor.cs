@@ -2,10 +2,8 @@
 using Akka.Event;
 using Akka.Monitoring;
 using Akka.Pattern;
-using DevelApp.Workflow.Model;
+using DevelApp.Workflow.Messages;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {

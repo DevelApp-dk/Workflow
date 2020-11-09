@@ -1,11 +1,8 @@
 ﻿using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
-using DevelApp.Workflow.Model;
+using DevelApp.Workflow.Messages;
 using Manatee.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
