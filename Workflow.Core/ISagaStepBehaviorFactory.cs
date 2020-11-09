@@ -1,4 +1,5 @@
-﻿using Manatee.Json;
+﻿using DevelApp.Workflow.Core.Model;
+using Manatee.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,6 @@ namespace DevelApp.Workflow.Core
         /// </summary>
         /// <param name="behaviorName"></param>
         /// <returns></returns>
-        ISagaStepBehavior GetStateBehavior(string behaviorName, int version, JsonValue behaviorConfiguration);
+        ISagaStepBehavior GetStateBehavior(KeyString behaviorName, VersionNumber version, JsonValue behaviorConfiguration);
     }
 }

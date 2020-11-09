@@ -1,4 +1,7 @@
 ﻿using Akka.Actor;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
 
@@ -10,8 +13,10 @@ namespace DevelApp.Workflow.Actors
     public class SagaActor : AbstractPersistedWorkflowActor
     {
         public Guid SagaId { get; }
+        private Model.Workflow _workflow;
+        private ISagaStepBehaviorFactory _behaviorFactory;
 
-        public SagaActor(Guid sagaId = default)
+        public SagaActor(Model.Workflow workflow, ISagaStepBehaviorFactory behaviorFactory, Guid sagaId = default)
         {
             if(sagaId == default)
             {
@@ -21,9 +26,11 @@ namespace DevelApp.Workflow.Actors
             {
                 SagaId = sagaId;
             }
+            _workflow = workflow;
+            _behaviorFactory = behaviorFactory;
         }
 
-        protected override int ActorVersion
+        protected override VersionNumber ActorVersion
         {
             get
             {
@@ -44,9 +51,15 @@ namespace DevelApp.Workflow.Actors
             throw new NotImplementedException();
         }
 
-        protected override void WorkflowMessageHandler(JsonValue message)
+        protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
-            throw new NotImplementedException();
+            switch(message.MessageTypeName)
+            {
+                default:
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
+                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    break;
+            }
         }
 
         /// <summary>

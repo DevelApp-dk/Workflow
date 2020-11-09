@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Monitoring;
+using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
 
@@ -14,7 +15,7 @@ namespace DevelApp.Workflow.Actors
         {
             ActorInstance = actorInstance;
 
-            Receive<JsonValue>(message => {
+            Receive<WorkflowMessage>(message => {
                 Context.IncrementMessagesReceived();
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 WorkflowMessageHandler(message);
@@ -41,7 +42,7 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract int ActorVersion { get; }
+        protected abstract VersionNumber ActorVersion { get; }
 
         /// <summary>
         /// Returns the actor instance
@@ -68,7 +69,7 @@ namespace DevelApp.Workflow.Actors
         /// Handle incoming Workflow Messages
         /// </summary>
         /// <param name="message"></param>
-        protected abstract void WorkflowMessageHandler(JsonValue message);
+        protected abstract void WorkflowMessageHandler(WorkflowMessage message);
 
         /// <summary>
         /// Handles DeadletterHandlingMessage. Default is to log and ignore

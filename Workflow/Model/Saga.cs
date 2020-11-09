@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.Model;
 
 namespace DevelApp.Workflow.Model
 {
@@ -71,7 +72,7 @@ namespace DevelApp.Workflow.Model
         /// Returns the Saga version
         /// </summary>
         /// <returns></returns>
-        public string SagaVersion
+        public VersionString SagaVersion
         {
             get
             {

@@ -2,6 +2,7 @@
 using Akka.Event;
 using Akka.Monitoring;
 using Akka.Pattern;
+using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using System;
 
@@ -37,7 +38,7 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract int ActorVersion { get; }
+        protected abstract VersionNumber ActorVersion { get; }
 
         /// <summary>
         /// Returns the actor instance

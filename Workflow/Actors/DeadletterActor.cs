@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Monitoring;
+using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        private int ActorVersion
+        private VersionNumber ActorVersion
         {
             get
             {
@@ -88,7 +89,15 @@ namespace DevelApp.Workflow.Actors
             }
             else
             {
-                Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), ActorRefs.NoSender);
+                if (dl.Message is WorkflowMessage)
+                {
+                    WorkflowMessage deadMessage = dl.Message as WorkflowMessage;
+                    Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), deadMessage.OriginalSender);
+                }
+                else
+                {
+                    Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), ActorRefs.NoSender);
+                }
             }
         }
 
