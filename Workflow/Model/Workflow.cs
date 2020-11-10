@@ -4,6 +4,7 @@ using Manatee.Json;
 using Quartz;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DevelApp.Workflow.Model
@@ -16,14 +17,42 @@ namespace DevelApp.Workflow.Model
         /// Builds workflow from workflow template
         /// </summary>
         /// <param name="workflow"></param>
-        public Workflow(JsonValue workflow)
+        public Workflow(WorkflowDefinition workflowDefinition)
         {
-            //Get all nodes
-            //Get all edges
-            //Add all edges starting from "START" with their nodes
-            //Add all remaining edges with their nodes
+            Name = workflowDefinition.Name;
+            Version = (int) workflowDefinition.Version;
 
+            //Add all edges starting from "START" with their nodes
+            foreach(WorkflowDefinition.Edge edge in workflowDefinition.Edges.Where(e=>e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)))
+            {
+                WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
+                internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+            }
+
+            //Add all remaining edges with their nodes
+            List<WorkflowDefinition.Edge> nonInsertedEdges = workflowDefinition.Edges.Where(e => !e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)).ToList();
+            while(nonInsertedEdges.Count > 0)
+            {
+                //Select first that have an included nodekey to avoid problems
+                WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
+                WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
+                internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration))
+
+                nonInsertedEdges.Remove(edge);
+            }
+
+            internalWorkflow.FinishGraph();
         }
+
+        /// <summary>
+        /// Name of the Workflow
+        /// </summary>
+        public KeyString Name { get; }
+
+        /// <summary>
+        /// Version number of the workflow
+        /// </summary>
+        public VersionNumber Version { get; }
 
         /// <summary>
         /// Returns all the start nodes
@@ -52,6 +81,19 @@ namespace DevelApp.Workflow.Model
         /// </summary>
         public class NodeData
         { 
+            public NodeData(string description, KeyString behaviorKey, VersionNumber behaviorVersion, JsonValue behaviorConfiguration)
+            {
+                Description = description;
+                BehaviorKey = behaviorKey;
+                BehaviorVersion = behaviorVersion;
+                BehaviorConfiguration = behaviorConfiguration;
+            }
+
+            /// <summary>
+            /// Description of the node to make it human readable and understandable
+            /// </summary>
+            public string Description { get; }
+
             /// <summary>
             /// The behavior of the sagaKey
             /// </summary>
@@ -69,14 +111,13 @@ namespace DevelApp.Workflow.Model
         }
 
         /// <summary>
-        /// Edge specific data
+        /// Edge specific data which is a dummy here
         /// </summary>
         public class EdgeData
         {
-            /// <summary>
-            /// 
-            /// </summary>
-            public string description { get; }
+            public EdgeData()
+            {
+            }
         }
     }
 }
