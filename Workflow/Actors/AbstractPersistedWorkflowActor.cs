@@ -28,7 +28,7 @@ namespace DevelApp.Workflow.Actors
             Recover<SnapshotOffer>(offer => {
                 Logger.Debug("{0} offered snapshot {1}", ActorId, offer.Snapshot.ToString());
                 T data = offer.Snapshot as T;
-                RecoverPersistedSnapShotWorkflowDataHandler(data);
+                RecoverPersistedSnapshotWorkflowDataHandler(data);
             });
 
             //Commands (like Receive)
@@ -155,7 +155,7 @@ namespace DevelApp.Workflow.Actors
         /// Snapshot is offered to start Recover process
         /// </summary>
         /// <param name="data"></param>
-        protected abstract void RecoverPersistedSnapShotWorkflowDataHandler(T data);
+        protected abstract void RecoverPersistedSnapshotWorkflowDataHandler(T data);
 
         /// <summary>
         /// Handle incoming Workflow Messages

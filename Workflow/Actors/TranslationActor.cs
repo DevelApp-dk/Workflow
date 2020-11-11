@@ -23,7 +23,7 @@ namespace DevelApp.Workflow.Actors
             throw new NotImplementedException();
         }
 
-        protected override void RecoverPersistedSnapShotWorkflowDataHandler(string data)
+        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }
