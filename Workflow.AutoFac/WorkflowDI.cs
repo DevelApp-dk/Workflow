@@ -74,7 +74,7 @@ namespace Workflow.AutoFac
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="lifetime"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, ContainerBuilder builder)
+        public static void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, ContainerBuilder builder)
         {
             lifetime.ApplicationStarted.Register(() =>
             {
