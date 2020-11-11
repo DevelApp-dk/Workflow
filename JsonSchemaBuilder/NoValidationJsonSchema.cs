@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JsonSchemaBuilder
+namespace DevelApp.JsonSchemaBuilder
 {
-    public class NoValidationJsonSchema : JsonSchemaBuilder
+    public class NoValidationJsonSchema : AbstractJsonSchema
     {
         public NoValidationJsonSchema()
         {

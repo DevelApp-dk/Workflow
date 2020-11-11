@@ -1,4 +1,5 @@
-﻿using Manatee.Json.Schema;
+﻿using DevelApp.Workflow.Core.Model;
+using Manatee.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace DevelApp.Workflow.Core
         /// Returns the Saga version
         /// </summary>
         /// <returns></returns>
-        string SagaVersion { get; }
+        VersionString SagaVersion { get; }
 
         /// <summary>
         /// Returns the first SagaStep of the Saga

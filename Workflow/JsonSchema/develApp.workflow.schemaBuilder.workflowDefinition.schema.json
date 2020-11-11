@@ -1,0 +1,105 @@
+{
+	"$id": "develApp.workflow.schemaBuilder.workflowDefinition",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"title": "Workflow",
+	"description": "The easy definition of the schema of a workflow",
+	"additionalProperties": true,
+	"properties": {
+		"name": {
+			"type": "string",
+			"title": "Name",
+			"description": "The version number of the workflow",
+			"maxLength": 100
+		},
+		"version": {
+			"type": "integer",
+			"title": "Version",
+			"description": "The version number of the workflow"
+		},
+		"nodes": {
+			"type": "array",
+			"title": "Nodes",
+			"description": "Nodes of the workflow",
+			"items": [
+				{
+					"type": "object",
+					"title": "Node",
+					"description": "Definition of an node",
+					"additionalProperties": false,
+					"properties": {
+						"nodeKey": {
+							"type": "string",
+							"title": "NodeKey",
+							"description": "NodeKey of the node",
+							"maxLength": 100
+						},
+						"description": {
+							"type": "string",
+							"title": "Description",
+							"description": "Description of the node to make it more readable and understandable"
+						},
+						"behaviorKey": {
+							"type": "string",
+							"title": "BehaviorKey",
+							"description": "Key of the behavior to use for lookup",
+							"maxLength": 100
+						},
+						"behaviorVersion": {
+							"type": "integer",
+							"title": "BehaviorVersion",
+							"description": "Version of the behavior"
+						},
+						"behaviorConfiguration": {
+							"type": "integer",
+							"title": "BehaviorConfiguration",
+							"description": "Configuration of the instance of behavior"
+						}
+					}
+				}
+			]
+		},
+		"edges": {
+			"type": "array",
+			"title": "Edges",
+			"description": "Edges of the workflow",
+			"items": [
+				{
+					"type": "object",
+					"title": "Edge",
+					"description": "Definition of an edge",
+					"additionalProperties": false,
+					"properties": {
+						"description": {
+							"type": "string",
+							"title": "Description",
+							"description": "Description of the edge"
+						},
+						"fromNodeKey": {
+							"type": "string",
+							"title": "FromNodeKey",
+							"description": "The nodekey of the node that the edge comes from",
+							"maxLength": 100
+						},
+						"toNodeKey": {
+							"type": "string",
+							"title": "ToNodeKey",
+							"description": "The nodekey of the node that the edge goes to",
+							"maxLength": 100
+						}
+					},
+					"required": [
+						"fromNodeKey",
+						"toNodeKey"
+					]
+				}
+			]
+		}
+	},
+	"required": [
+		"name",
+		"version",
+		"nodes",
+		"edges"
+	]
+}

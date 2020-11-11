@@ -5,18 +5,21 @@ using Manatee.Json.Schema;
 using Manatee.Json.Serialization;
 using System.IO;
 
-namespace JsonSchemaBuilder
+namespace DevelApp.JsonSchemaBuilder
 {
     /// <summary>
     /// Schema builder abstract class with convenience methosd for creating JsonSchema
     /// </summary>
-    public abstract class JsonSchemaBuilder
+    public abstract class AbstractJsonSchema: IJsonSchemaDefinition
     {
         public string Name
         {
             get
             {
-                return GetType().Name.Replace("JsonSchema", "");
+                string name = GetType().Name;
+                string nameWithoutJsonSchema = name.Replace("JsonSchema", "");
+
+                return GetType().FullName.Replace(name, nameWithoutJsonSchema);
             }
         }
 
@@ -30,6 +33,45 @@ namespace JsonSchemaBuilder
         /// </summary>
         public JsonSchema JsonSchema { get; protected set; }
 
+        /// <summary>
+        /// Write schema to file
+        /// </summary>
+        /// <param name="schemaName"></param>
+        /// <param name="jsonSchema"></param>
+        /// <param name="filePath"></param>
+        public void WriteSchemaToFile(string filePath)
+        {
+            var serializer = new JsonSerializer();
+            if (JsonSchema != null)
+            {
+                var schemaInJson = JsonSchema.ToJson(serializer);
+
+                File.WriteAllText(Path.Combine(filePath, SchemaNameToCorrectCase() + FileEnding), schemaInJson.GetIndentedString());
+            }
+            else
+            {
+                throw new Exception("WriteSchemaToFile called before JsonSchema has been set");
+            }
+        }
+
+        private string SchemaNameToCorrectCase()
+        {
+            return Name.Substring(0, 1).ToLowerInvariant() + Name.Substring(1);
+        }
+
+        /// <summary>
+        /// Almost standard file ending
+        /// </summary>
+        protected string FileEnding
+        {
+            get
+            {
+                return ".schema.json";
+            }
+        }
+
+
+        #region JsonSchemaBuilder
         // Inspiration for types from https://github.com/lcahlander/xsd2json
 
         private JsonSchema Factory(bool topHierarchy)
@@ -252,41 +294,7 @@ namespace JsonSchemaBuilder
             }
         }
 
-        /// <summary>
-        /// Write schema to file
-        /// </summary>
-        /// <param name="schemaName"></param>
-        /// <param name="jsonSchema"></param>
-        /// <param name="filePath"></param>
-        public void WriteSchemaToFile(string filePath)
-        {
-            var serializer = new JsonSerializer();
-            if (JsonSchema != null)
-            {
-                var schemaInJson = JsonSchema.ToJson(serializer);
+        #endregion
 
-                File.WriteAllText(Path.Combine(filePath, SchemaNameToCorrectCase() + FileEnding), schemaInJson.GetIndentedString());
-            }
-            else
-            {
-                throw new Exception("WriteSchemaToFile called before JsonSchema has been set");
-            }
-        }
-
-        private string SchemaNameToCorrectCase()
-        {
-            return Name.Substring(0, 1).ToLowerInvariant() + Name.Substring(1);
-        }
-
-        /// <summary>
-        /// Almost standard file ending
-        /// </summary>
-        protected string FileEnding
-        {
-            get
-            {
-                return ".schema.json";
-            }
-        }
     }
 }

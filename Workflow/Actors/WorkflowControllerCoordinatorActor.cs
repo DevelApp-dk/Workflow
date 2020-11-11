@@ -1,4 +1,6 @@
 ﻿using Akka.Actor;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,7 @@ namespace DevelApp.Workflow.Actors
     /// </summary>
     public class WorkflowControllerCoordinatorActor : AbstractWorkflowActor
     {
-        protected override int ActorVersion
+        protected override VersionNumber ActorVersion
         {
             get
             {
@@ -19,9 +21,15 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void WorkflowMessageHandler(JsonValue message)
+        protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
-            throw new NotImplementedException();
+            switch (message.MessageTypeName)
+            {
+                default:
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
+                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    break;
+            }
         }
 
         /// <summary>

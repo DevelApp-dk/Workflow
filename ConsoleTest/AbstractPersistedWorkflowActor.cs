@@ -4,41 +4,39 @@ using Akka.Persistence;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
+using System;
 
-namespace DevelApp.Workflow.Actors
+namespace ConsoleTest
 {
-    public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor where T:class
+    public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor
     {
         private int _snapshotPerVersion;
         private int _persistsSinceLastSnapshot;
         protected readonly ILoggingAdapter Logger = Logging.GetLogger(Context);
 
-        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 1)
+        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 5)
         {
             ActorInstance = actorInstance;
 
             _snapshotPerVersion = snapshotPerVersion;
 
             //Recover
-            Recover<T>(data => {
+            Recover<T>(data =>
+            {
                 Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
-                RecoverPersistedWorkflowDataHandler(data); 
-            });
-
-            Recover<SnapshotOffer>(offer => {
-                Logger.Debug("{0} offered snapshot {1}", ActorId, offer.Snapshot.ToString());
-                T data = offer.Snapshot as T;
-                RecoverPersistedSnapshotWorkflowDataHandler(data);
+                RecoverPersistedWorkflowDataHandler(data);
             });
 
             //Commands (like Receive)
-            Command<WorkflowMessage>(message => {
+            Command<WorkflowMessage>(message =>
+            {
                 Context.IncrementMessagesReceived();
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
-                WorkflowMessageHandler(message); 
+                WorkflowMessageHandler(message);
             });
 
-            Command<SaveSnapshotSuccess>(success => {
+            Command<SaveSnapshotSuccess>(success =>
+            {
                 Logger.Debug("SaveSnapshot succeeded for {0} so deleting messages until this snapshot", PersistenceId);
                 // soft-delete the journal up until the sequence # at
                 // which the snapshot was taken
@@ -51,20 +49,14 @@ namespace DevelApp.Workflow.Actors
                 Logger.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
             });
 
-            //Handle snapshot failue
-            Command<DeleteMessagesFailure>(failure =>
-            {
-                Logger.Debug(failure.Cause, "DeleteMessages Failed for {0}", PersistenceId);
-            });
-
-            //Handle deleted messages success
             Command<DeleteMessagesSuccess>(message =>
             {
                 //Do nothing
             }
             );
 
-            Command<DeadletterHandlingMessage>(message => {
+            Command<DeadletterHandlingMessage>(message =>
+            {
                 Context.IncrementCounter(nameof(DeadletterHandlingMessage));
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 DeadletterHandlingMessageHandler(message);
@@ -127,35 +119,32 @@ namespace DevelApp.Workflow.Actors
         /// <param name="data"></param>
         protected void PersistWorkflowData(T data)
         {
-            if (_snapshotPerVersion <= 1)
-            {
-                SaveSnapshot(data);
-            }
-            else
-            {
+            //if (_snapshotPerVersion <= 1)
+            //{
+            //    SaveSnapshot(data);
+            //}
+            //else
+            //{
                 Persist(data, s =>
                 {
+                    Logger.Debug($"persistsSinceLastSnapshot {_persistsSinceLastSnapshot} snapshotPerVersion {_snapshotPerVersion}");
+                    Logger.Debug($"Calculation {++_persistsSinceLastSnapshot % _snapshotPerVersion == 0}");
                     if (++_persistsSinceLastSnapshot % _snapshotPerVersion == 0)
                     {
                         //time to save a snapshot
+                        Logger.Debug($"{ActorId} is making a snapshot");
                         SaveSnapshot(data);
                     }
                 });
-            }
+            //}
         }
-    
+
 
         /// <summary>
         /// Used for recovering from crash
         /// </summary>
         /// <param name="data"></param>
         protected abstract void RecoverPersistedWorkflowDataHandler(T data);
-
-        /// <summary>
-        /// Snapshot is offered to start Recover process
-        /// </summary>
-        /// <param name="data"></param>
-        protected abstract void RecoverPersistedSnapshotWorkflowDataHandler(T data);
 
         /// <summary>
         /// Handle incoming Workflow Messages

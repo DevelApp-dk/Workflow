@@ -1,4 +1,6 @@
 ﻿using Akka.Actor;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -9,9 +11,9 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Parent of multiple ModuleActor
     /// </summary>
-    public class DataOwnerActor : AbstractPersistedWorkflowActor
+    public class DataOwnerActor : AbstractPersistedWorkflowActor<string>
     {
-        protected override int ActorVersion
+        protected override VersionNumber ActorVersion
         {
             get
             {
@@ -19,14 +21,25 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }
 
-        protected override void WorkflowMessageHandler(JsonValue message)
+        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
+        }
+
+        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        {
+            switch (message.MessageTypeName)
+            {
+                default:
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
+                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    break;
+            }
         }
 
         /// <summary>

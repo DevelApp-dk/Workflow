@@ -8,13 +8,13 @@ namespace DevelApp.Workflow.Core.AbstractImplementation
     /// <summary>
     /// Convenience implementation of IUserInteractionStateBehavior
     /// </summary>
-    public abstract class AbstractUserInteractionStateBehavior : AbstractStateBehavior, IUserInteractionStateBehavior
+    public abstract class AbstractUserInteractionSagaStepBehavior : AbstractSagaStepBehavior, IUserInteractionSagaStepBehavior
     {
-        public StateBehaviorType BehaviorType
+        public SagaStepBehaviorType BehaviorType
         {
             get
             {
-                return StateBehaviorType.UserInteraction;
+                return SagaStepBehaviorType.UserInteraction;
             }
         }
 
