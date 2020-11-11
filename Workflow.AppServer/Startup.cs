@@ -52,7 +52,7 @@ namespace Workflow.AppServer
             });
 
             //Setup actors
-            //WorkflowDI.
+            WorkflowDI.
         }
     }
 }
