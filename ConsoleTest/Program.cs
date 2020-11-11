@@ -13,7 +13,7 @@ namespace ConsoleTest
             Log.Logger = new LoggerConfiguration()
                             .MinimumLevel.Debug()
                             .WriteTo.Console()
-                            .WriteTo.File("Console_{date}.log", rollingInterval: RollingInterval.Day)
+                            .WriteTo.File("Console_.log", rollingInterval: RollingInterval.Day)
                             .CreateLogger(); 
             
             Log.Debug("Minor test");

@@ -26,24 +26,24 @@ namespace ConsoleTest
         protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
         {
             recovercalls += 1;
-            Console.WriteLine($"Recover {recovercalls} times called with [{data.String}]");
+            Logger.Debug($"Recover {recovercalls} times called with [{data.String}]");
         }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
-            Console.WriteLine($"Message {message.MessageTypeName} received");
+            Logger.Debug($"Message {message.MessageTypeName} received");
             PersistWorkflowData(message.Data);
         }
 
         protected override void PreStart()
         {
             base.PreStart();
-            Console.WriteLine($"{ActorId} is starting");
+            Logger.Debug($"{ActorId} is starting");
         }
 
         protected override void PostStop()
         {
-            Console.WriteLine($"{ActorId} is stopping");
+            Logger.Debug($"{ActorId} is stopping");
             base.PostStop();
         }
     }
