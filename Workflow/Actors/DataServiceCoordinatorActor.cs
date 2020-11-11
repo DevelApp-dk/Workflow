@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Parent of the DataServiceControllerActor and several DataServiceWebhookActor
     /// </summary>
-    public class DataServiceCoordinatorActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class DataServiceCoordinatorActor : AbstractPersistedWorkflowActor<string>
     {
         protected override VersionNumber ActorVersion
         {
@@ -21,7 +21,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }

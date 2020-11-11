@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
-    public class TranslationActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class TranslationActor : AbstractPersistedWorkflowActor<string>
     {
         protected override VersionNumber ActorVersion
         {
@@ -18,7 +18,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }

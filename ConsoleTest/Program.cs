@@ -28,7 +28,7 @@ namespace ConsoleTest
         {
             // Setup the actor system
             ActorSystem system = ActorSystem.Create("MySystem");
-
+            
             Log.Debug("Start action");
             // Setup an actor that will handle deadletter type messages
             var persistenceTestActorProps = Props.Create(() => new PersistenceTestActor());

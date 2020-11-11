@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Singleton parent of potentially multiple DataOwnerActor
     /// </summary>
-    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor<string>
     {
         protected override VersionNumber ActorVersion
         {
@@ -21,7 +21,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }

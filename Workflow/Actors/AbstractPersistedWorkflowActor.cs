@@ -45,6 +45,19 @@ namespace DevelApp.Workflow.Actors
                 Logger.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
             });
 
+            //Handle snapshot failue
+            Command<DeleteMessagesFailure>(failure =>
+            {
+                Logger.Debug(failure.Cause, "DeleteMessages Failed for {0}", PersistenceId);
+            });
+
+            //Handle deleted messages success
+            Command<DeleteMessagesSuccess>(message =>
+            {
+                //Do nothing
+            }
+            );
+
             Command<DeadletterHandlingMessage>(message => {
                 Context.IncrementCounter(nameof(DeadletterHandlingMessage));
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());

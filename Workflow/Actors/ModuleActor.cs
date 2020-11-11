@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds the module informaion ande acts as coordinator for the children
     /// </summary>
-    public class ModuleActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class ModuleActor : AbstractPersistedWorkflowActor<string>
     {
         protected override VersionNumber ActorVersion
         {
@@ -21,7 +21,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }

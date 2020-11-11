@@ -50,6 +50,8 @@ namespace Workflow.AppServer
             {
                 endpoints.MapControllers();
             });
+
+            WorkflowDI.
         }
     }
 }

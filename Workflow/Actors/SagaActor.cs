@@ -10,7 +10,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class SagaActor : AbstractPersistedWorkflowActor<string>
     {
         public Guid SagaId { get; }
         private Model.Workflow _workflow;
@@ -46,7 +46,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();
         }

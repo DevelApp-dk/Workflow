@@ -21,19 +21,22 @@ namespace ConsoleTest
             _snapshotPerVersion = snapshotPerVersion;
 
             //Recover
-            Recover<T>(data => {
+            Recover<T>(data =>
+            {
                 Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
                 RecoverPersistedWorkflowDataHandler(data);
             });
 
             //Commands (like Receive)
-            Command<WorkflowMessage>(message => {
+            Command<WorkflowMessage>(message =>
+            {
                 Context.IncrementMessagesReceived();
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 WorkflowMessageHandler(message);
             });
 
-            Command<SaveSnapshotSuccess>(success => {
+            Command<SaveSnapshotSuccess>(success =>
+            {
                 Logger.Debug("SaveSnapshot succeeded for {0} so deleting messages until this snapshot", PersistenceId);
                 // soft-delete the journal up until the sequence # at
                 // which the snapshot was taken
@@ -46,7 +49,14 @@ namespace ConsoleTest
                 Logger.Debug(failure.Cause, "SaveSnapshot Failed for {0}", PersistenceId);
             });
 
-            Command<DeadletterHandlingMessage>(message => {
+            Command<DeleteMessagesSuccess>(message =>
+            {
+                //Do nothing
+            }
+            );
+
+            Command<DeadletterHandlingMessage>(message =>
+            {
                 Context.IncrementCounter(nameof(DeadletterHandlingMessage));
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 DeadletterHandlingMessageHandler(message);

@@ -13,7 +13,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds a lookup for configuration
     /// </summary>
-    public class ConfigurationActor : AbstractPersistedWorkflowActor<JsonValue>
+    public class ConfigurationActor : AbstractPersistedWorkflowActor<string>
     {
         protected override VersionNumber ActorVersion
         {
@@ -23,7 +23,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue message)
+        protected override void RecoverPersistedWorkflowDataHandler(string message)
         {
             throw new NotImplementedException();
         }

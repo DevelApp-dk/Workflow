@@ -8,10 +8,10 @@ using System.Text;
 
 namespace ConsoleTest
 {
-    public class PersistenceTestActor : ConsoleTest.AbstractPersistedWorkflowActor<JsonValue>
+    public class PersistenceTestActor : ConsoleTest.AbstractPersistedWorkflowActor<string>
     {
         private int recovercalls = 0;
-        public PersistenceTestActor() : base(snapshotPerVersion: 100)
+        public PersistenceTestActor() : base(actorInstance: 1, snapshotPerVersion: 1)
         { 
         }
 
@@ -23,16 +23,16 @@ namespace ConsoleTest
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(JsonValue data)
+        protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             recovercalls += 1;
-            Logger.Debug($"Recover {recovercalls} times called with [{data.String}]");
+            Logger.Debug($"Recover {recovercalls} times called with [{data}]");
         }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
             Logger.Debug($"Message {message.MessageTypeName} received");
-            PersistWorkflowData(message.Data);
+            PersistWorkflowData(message.MessageTypeName);
         }
 
         protected override void PreStart()
