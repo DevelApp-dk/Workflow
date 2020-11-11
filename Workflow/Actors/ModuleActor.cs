@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds the module informaion ande acts as coordinator for the children
     /// </summary>
-    public class ModuleActor : AbstractPersistedWorkflowActor
+    public class ModuleActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {

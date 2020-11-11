@@ -4,8 +4,9 @@ using Akka.Persistence;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
+using System;
 
-namespace DevelApp.Workflow.Actors
+namespace ConsoleTest
 {
     public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor
     {
@@ -22,14 +23,14 @@ namespace DevelApp.Workflow.Actors
             //Recover
             Recover<T>(data => {
                 Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
-                RecoverPersistedWorkflowDataHandler(data); 
+                RecoverPersistedWorkflowDataHandler(data);
             });
 
             //Commands (like Receive)
             Command<WorkflowMessage>(message => {
                 Context.IncrementMessagesReceived();
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
-                WorkflowMessageHandler(message); 
+                WorkflowMessageHandler(message);
             });
 
             Command<SaveSnapshotSuccess>(success => {
@@ -124,7 +125,7 @@ namespace DevelApp.Workflow.Actors
                 });
             }
         }
-    
+
 
         /// <summary>
         /// Used for recovering from crash

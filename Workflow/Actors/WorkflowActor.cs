@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds the specific workflow and is parent for all SagaActors
     /// </summary>
-    public class WorkflowActor : AbstractPersistedWorkflowActor
+    public class WorkflowActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {

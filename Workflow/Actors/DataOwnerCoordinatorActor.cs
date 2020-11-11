@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Singleton parent of potentially multiple DataOwnerActor
     /// </summary>
-    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor
+    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {

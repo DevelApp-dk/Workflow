@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Workflow.AutoFac;
+//using DevelApp.Workflow.AutoFac;
 
 namespace Workflow.AppServer
 {
@@ -26,6 +28,8 @@ namespace Workflow.AppServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            WorkflowDI.ConfigureServices(services, "Workflow");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

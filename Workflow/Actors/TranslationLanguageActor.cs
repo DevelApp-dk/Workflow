@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds the active languages delegating to TranslationActor for the specific language
     /// </summary>
-    public class TranslationLanguageActor : AbstractPersistedWorkflowActor
+    public class TranslationLanguageActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {

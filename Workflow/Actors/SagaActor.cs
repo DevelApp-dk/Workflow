@@ -10,7 +10,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor
+    public class SagaActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         public Guid SagaId { get; }
         private Model.Workflow _workflow;

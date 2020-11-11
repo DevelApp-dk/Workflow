@@ -36,7 +36,7 @@ namespace DevelApp.Workflow.Model
                 //Select first that have an included nodekey to avoid problems
                 WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
-                internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration))
+                internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
 
                 nonInsertedEdges.Remove(edge);
             }

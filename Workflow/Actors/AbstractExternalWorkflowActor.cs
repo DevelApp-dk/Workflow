@@ -50,6 +50,7 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         protected override void PreStart()
         {
+            base.PreStart();
             Context.IncrementActorCreated();
         }
 
@@ -59,6 +60,7 @@ namespace DevelApp.Workflow.Actors
         protected override void PostStop()
         {
             Context.IncrementActorStopped();
+            base.PostStop();
         }
 
         private CircuitBreaker _circuitBreaker;

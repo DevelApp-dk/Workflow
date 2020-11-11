@@ -59,6 +59,9 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         protected override void PreStart()
         {
+            base.PreStart();
+            // subscribe to the event stream for messages of type "DeadLetter"
+            Context.System.EventStream.Subscribe(Self, typeof(DeadLetter));
             Context.IncrementActorCreated();
         }
 
@@ -68,6 +71,9 @@ namespace DevelApp.Workflow.Actors
         protected override void PostStop()
         {
             Context.IncrementActorStopped();
+            Context.System.EventStream.Unsubscribe(Self, typeof(DeadLetter));
+            base.PostStop();
+
         }
         #endregion
 

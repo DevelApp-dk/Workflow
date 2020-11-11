@@ -11,7 +11,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Parent of the DataServiceControllerActor and several DataServiceWebhookActor
     /// </summary>
-    public class DataServiceCoordinatorActor : AbstractPersistedWorkflowActor
+    public class DataServiceCoordinatorActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {

@@ -13,7 +13,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds a lookup for configuration
     /// </summary>
-    public class ConfigurationActor : AbstractPersistedWorkflowActor
+    public class ConfigurationActor : AbstractPersistedWorkflowActor<JsonValue>
     {
         protected override VersionNumber ActorVersion
         {
