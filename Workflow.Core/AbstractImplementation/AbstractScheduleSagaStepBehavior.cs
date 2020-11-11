@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Manatee.Json;
+using Manatee.Json.Schema;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,13 +9,13 @@ namespace DevelApp.Workflow.Core.AbstractImplementation
     /// <summary>
     /// Convenience implementation of IScheduleStateBehavior
     /// </summary>
-    public abstract class AbstractScheduleStateBehavior : AbstractStateBehavior, IScheduleStateBehavior
+    public abstract class AbstractScheduleSagaStepBehavior : AbstractSagaStepBehavior, IScheduleSagaStepBehavior
     {
-        public StateBehaviorType BehaviorType
+        public SagaStepBehaviorType BehaviorType
         {
             get
             {
-                return StateBehaviorType.Schedule;
+                return SagaStepBehaviorType.Schedule;
             }
         }
 

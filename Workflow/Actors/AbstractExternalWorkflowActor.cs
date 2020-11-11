@@ -2,10 +2,9 @@
 using Akka.Event;
 using Akka.Monitoring;
 using Akka.Pattern;
-using DevelApp.Workflow.Model;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Messages;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
@@ -39,7 +38,7 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract int ActorVersion { get; }
+        protected abstract VersionNumber ActorVersion { get; }
 
         /// <summary>
         /// Returns the actor instance
@@ -51,6 +50,7 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         protected override void PreStart()
         {
+            base.PreStart();
             Context.IncrementActorCreated();
         }
 
@@ -60,6 +60,7 @@ namespace DevelApp.Workflow.Actors
         protected override void PostStop()
         {
             Context.IncrementActorStopped();
+            base.PostStop();
         }
 
         private CircuitBreaker _circuitBreaker;

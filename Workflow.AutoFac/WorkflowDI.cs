@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Quartz.Actor;
+using Autofac;
 using DevelApp.Workflow.Actors;
 using DevelApp.Workflow.TopActorProviders;
 using Microsoft.AspNetCore.Builder;
@@ -73,7 +74,7 @@ namespace Workflow.AutoFac
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="lifetime"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, ContainerBuilder builder)
         {
             lifetime.ApplicationStarted.Register(() =>
             {
@@ -83,6 +84,18 @@ namespace Workflow.AutoFac
             {
                 app.ApplicationServices.GetService<ActorSystem>().Terminate().Wait();
             });
+            builder.RegisterType<ConfigurationActor>();
+            builder.RegisterType<DataOwnerActor>();
+            builder.RegisterType<DataServiceControllerActor>();
+            builder.RegisterType<DataServiceWebhookActor>();
+            builder.RegisterType<JsonSchemaActor>();
+            builder.RegisterType<ModuleActor>();
+            builder.RegisterType<SagaActor>();
+            builder.RegisterType<TranslationActor>();
+            builder.RegisterType<TranslationLanguageActor>();
+            builder.RegisterType<UserActor>();
+            builder.RegisterType<WorkflowActor>();
+            builder.RegisterType<WorkflowControllerActor>();
         }
     }
 }

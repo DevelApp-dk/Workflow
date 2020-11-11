@@ -7,13 +7,13 @@ namespace DevelApp.Workflow.Core.AbstractImplementation
     /// <summary>
     /// Convenience implementation of IAutomaticStateBehavior
     /// </summary>
-    public abstract class AbstractAutomaticStateBehavior : AbstractStateBehavior, IAutomaticStateBehavior
+    public abstract class AbstractAutomaticSagaBehavior : AbstractSagaStepBehavior, IAutomaticSagaStepBehavior
     {
-        public StateBehaviorType BehaviorType
+        public SagaStepBehaviorType BehaviorType
         {
             get
             {
-                return StateBehaviorType.Automatic;
+                return SagaStepBehaviorType.Automatic;
             }
         }
     }

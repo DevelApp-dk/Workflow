@@ -1,11 +1,11 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Monitoring;
-using DevelApp.Workflow.Model;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
@@ -41,7 +41,7 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        private int ActorVersion
+        private VersionNumber ActorVersion
         {
             get
             {
@@ -59,6 +59,9 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         protected override void PreStart()
         {
+            base.PreStart();
+            // subscribe to the event stream for messages of type "DeadLetter"
+            Context.System.EventStream.Subscribe(Self, typeof(DeadLetter));
             Context.IncrementActorCreated();
         }
 
@@ -68,6 +71,9 @@ namespace DevelApp.Workflow.Actors
         protected override void PostStop()
         {
             Context.IncrementActorStopped();
+            Context.System.EventStream.Unsubscribe(Self, typeof(DeadLetter));
+            base.PostStop();
+
         }
         #endregion
 
@@ -89,7 +95,15 @@ namespace DevelApp.Workflow.Actors
             }
             else
             {
-                Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), ActorRefs.NoSender);
+                if (dl.Message is WorkflowMessage)
+                {
+                    WorkflowMessage deadMessage = dl.Message as WorkflowMessage;
+                    Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), deadMessage.OriginalSender);
+                }
+                else
+                {
+                    Context.ActorSelection(recipientList[0].ActorPath).Tell(new DeadletterHandlingMessage(recipientList, dl.Message), ActorRefs.NoSender);
+                }
             }
         }
 

@@ -7,7 +7,7 @@ namespace DevelApp.Workflow.Core
     /// <summary>
     /// Defines the state behavior in the Workflow Node
     /// </summary>
-    public enum StateBehaviorType
+    public enum SagaStepBehaviorType
     {
         /// <summary>
         /// Type is unknown which is an uninitialized or an error state for type
