@@ -26,6 +26,11 @@ namespace DevelApp.Workflow.Actors
             throw new NotImplementedException();
         }
 
+        protected override void RecoverPersistedSnapShotWorkflowDataHandler(string data)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
             switch (message.MessageTypeName)

@@ -14,7 +14,7 @@ namespace ConsoleTest
         private int _persistsSinceLastSnapshot;
         protected readonly ILoggingAdapter Logger = Logging.GetLogger(Context);
 
-        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 1)
+        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 5)
         {
             ActorInstance = actorInstance;
 
@@ -119,21 +119,24 @@ namespace ConsoleTest
         /// <param name="data"></param>
         protected void PersistWorkflowData(T data)
         {
-            if (_snapshotPerVersion <= 1)
-            {
-                SaveSnapshot(data);
-            }
-            else
-            {
+            //if (_snapshotPerVersion <= 1)
+            //{
+            //    SaveSnapshot(data);
+            //}
+            //else
+            //{
                 Persist(data, s =>
                 {
+                    Logger.Debug($"persistsSinceLastSnapshot {_persistsSinceLastSnapshot} snapshotPerVersion {_snapshotPerVersion}");
+                    Logger.Debug($"Calculation {++_persistsSinceLastSnapshot % _snapshotPerVersion == 0}");
                     if (++_persistsSinceLastSnapshot % _snapshotPerVersion == 0)
                     {
                         //time to save a snapshot
+                        Logger.Debug($"{ActorId} is making a snapshot");
                         SaveSnapshot(data);
                     }
                 });
-            }
+            //}
         }
 
 

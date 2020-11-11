@@ -7,7 +7,7 @@ using Manatee.Json;
 
 namespace DevelApp.Workflow.Actors
 {
-    public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor
+    public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor where T:class
     {
         private int _snapshotPerVersion;
         private int _persistsSinceLastSnapshot;
@@ -23,6 +23,12 @@ namespace DevelApp.Workflow.Actors
             Recover<T>(data => {
                 Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
                 RecoverPersistedWorkflowDataHandler(data); 
+            });
+
+            Recover<SnapshotOffer>(offer => {
+                Logger.Debug("{0} offered snapshot {1}", ActorId, offer.Snapshot.ToString());
+                T data = offer.Snapshot as T;
+                RecoverPersistedSnapShotWorkflowDataHandler(data);
             });
 
             //Commands (like Receive)
@@ -144,6 +150,12 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         /// <param name="data"></param>
         protected abstract void RecoverPersistedWorkflowDataHandler(T data);
+
+        /// <summary>
+        /// Snapshot is offered to start Recover process
+        /// </summary>
+        /// <param name="data"></param>
+        protected abstract void RecoverPersistedSnapShotWorkflowDataHandler(T data);
 
         /// <summary>
         /// Handle incoming Workflow Messages

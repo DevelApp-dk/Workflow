@@ -51,7 +51,8 @@ namespace Workflow.AppServer
                 endpoints.MapControllers();
             });
 
-            WorkflowDI.
+            //Setup actors
+            //WorkflowDI.
         }
     }
 }
