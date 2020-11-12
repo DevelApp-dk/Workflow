@@ -1,4 +1,5 @@
-﻿using DevelApp.Workflow.Core;
+﻿using DevelApp.RuntimePluggableClassFactory;
+using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
 using Manatee.Json;
 using System;
@@ -15,7 +16,10 @@ namespace DevelApp.Workflow.Factories
     /// </summary>
     public class SagaStepBehaviorFactory : ISagaStepBehaviorFactory
     {
-        public SagaStepBehaviorFactory
+        public SagaStepBehaviorFactory()
+        {
+            PluginClassFactory<ISagaStepBehavior> pluginSagaStepBehaviorFactory = new PluginClassFactory<ISagaStepBehavior>(10);
+        }
 
         public ISagaStepBehavior GetStateBehavior(KeyString behaviorName, VersionNumber version, JsonValue behaviorConfiguration)
         {
