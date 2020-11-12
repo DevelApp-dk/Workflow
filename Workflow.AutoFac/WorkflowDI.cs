@@ -2,29 +2,46 @@
 using Akka.Quartz.Actor;
 using Autofac;
 using DevelApp.Workflow.Actors;
+using DevelApp.Workflow.Core;
 using DevelApp.Workflow.TopActorProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
-using System.Data;
 
 namespace Workflow.AutoFac
 {
     public class WorkflowDI
     {
         /// <summary>
-        /// Registers ActorSystem and adds to level 
+        /// Registers ActorSystem, Configuration is loaded from either App.config or Web.config and adds top level actors as provider delegates
         /// </summary>
         /// <param name="serviceCollection"></param>
         public static void ConfigureServices(IServiceCollection serviceCollection, string actorSystemName)
         {
-            // Configuration is loaded from either App.config or Web.config
+            // 
             serviceCollection.AddSingleton(_ => ActorSystem.Create(actorSystemName));
+        }
 
+        /// <summary>
+        /// Registers ActorSystem, Configuration is loaded from Uri provided and adds top level actors as provider delegates
+        /// System.Uri(@"C:\Workflow\MonsterSystem.config") grants an Uri from the local
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        public static void ConfigureServices(IServiceCollection serviceCollection, Uri actorSystemName)
+        {
             //Configuration is loaded from C:\Workflow\MonsterSystem.config
-            //serviceCollection.AddSingleton(_ => ActorSystem.Create(actorSystemName, DevelApp.Workflow.Utilities.ConfigurationLoader.LoadFromDisc(@"C:\Workflow\MonsterSystem.config")));
+            serviceCollection.AddSingleton(_ => ActorSystem.Create(actorSystemName, DevelApp.Workflow.Utilities.ConfigurationLoader.LoadFromDisc()));
+        }
 
+        /// <summary>
+        /// Adds top level actors as provider delegates
+        /// Requires an ActorSystem to be registered before use
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        public static void ConfigureServices(IServiceCollection serviceCollection)
+        {
             serviceCollection.AddSingleton<DataOwnerCoordinatorActorProvider>(provider =>
             {
                 var actorSystem = provider.GetService<ActorSystem>();
@@ -84,6 +101,7 @@ namespace Workflow.AutoFac
             {
                 app.ApplicationServices.GetService<ActorSystem>().Terminate().Wait();
             });
+            builder.RegisterType<ISagaStepBehaviorFactory>
             builder.RegisterType<ConfigurationActor>();
             builder.RegisterType<DataOwnerActor>();
             builder.RegisterType<DataServiceControllerActor>();
