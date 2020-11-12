@@ -19,15 +19,22 @@ namespace DevelApp.Workflow.Utilities
         /// <returns></returns>
         public static Config LoadFromDisc(Uri fileNameAndPathUri)
         {
-            if(!fileNameAndPathUri.IsFile)
+            if (!fileNameAndPathUri.IsFile)
             {
-                throw new WorkflowStartupException("The supplied Uri is not a file Uri")
+                throw new WorkflowStartupException("The supplied Uri is not a file Uri");
             }
 
-            if (File.Exists(fileNameAndPath))
+            if (File.Exists(fileNameAndPathUri.LocalPath))
             {
-                string config = File.ReadAllText(fileNameAndPath);
-                return ConfigurationFactory.ParseString(config);
+                try
+                {
+                    string config = File.ReadAllText(fileNameAndPathUri.LocalPath);
+                    return ConfigurationFactory.ParseString(config);
+                }
+                catch (Exception ex)
+                {
+                    throw new WorkflowStartupException($"Error occured when trying to read configuration file [{fileNameAndPathUri.LocalPath}]", ex);
+                }
             }
 
             return Config.Empty;

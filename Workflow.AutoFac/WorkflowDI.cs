@@ -3,7 +3,9 @@ using Akka.Quartz.Actor;
 using Autofac;
 using DevelApp.Workflow.Actors;
 using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Factories;
 using DevelApp.Workflow.TopActorProviders;
+using DevelApp.Workflow.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,10 +31,10 @@ namespace Workflow.AutoFac
         /// System.Uri(@"C:\Workflow\MonsterSystem.config") grants an Uri from the local
         /// </summary>
         /// <param name="serviceCollection"></param>
-        public static void ConfigureServices(IServiceCollection serviceCollection, Uri actorSystemName)
+        public static void ConfigureServices(IServiceCollection serviceCollection, string actorSystemName, Uri actorSystemConfigurationFileUri)
         {
-            //Configuration is loaded from C:\Workflow\MonsterSystem.config
-            serviceCollection.AddSingleton(_ => ActorSystem.Create(actorSystemName, DevelApp.Workflow.Utilities.ConfigurationLoader.LoadFromDisc()));
+            //Configuration is loaded from actorSystemConfigurationFileUri
+            serviceCollection.AddSingleton(_ => ActorSystem.Create(actorSystemName, ConfigurationLoader.LoadFromDisc(actorSystemConfigurationFileUri)));
         }
 
         /// <summary>
@@ -101,7 +103,6 @@ namespace Workflow.AutoFac
             {
                 app.ApplicationServices.GetService<ActorSystem>().Terminate().Wait();
             });
-            builder.RegisterType<ISagaStepBehaviorFactory>
             builder.RegisterType<ConfigurationActor>();
             builder.RegisterType<DataOwnerActor>();
             builder.RegisterType<DataServiceControllerActor>();
