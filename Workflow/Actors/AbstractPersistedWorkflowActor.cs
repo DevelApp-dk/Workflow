@@ -7,27 +7,28 @@ using Manatee.Json;
 
 namespace DevelApp.Workflow.Actors
 {
-    public abstract class AbstractPersistedWorkflowActor<T> : ReceivePersistentActor where T:class
+    public abstract class AbstractPersistedWorkflowActor<IndividualItem, Collection> : ReceivePersistentActor where Collection : class,new()
     {
-        private int _snapshotPerVersion;
-        private int _persistsSinceLastSnapshot;
         protected readonly ILoggingAdapter Logger = Logging.GetLogger(Context);
+        protected Collection PersistedCollection;
 
-        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 1)
+        public AbstractPersistedWorkflowActor(int actorInstance = 1, int snapshotPerVersion = 100)
         {
             ActorInstance = actorInstance;
 
             _snapshotPerVersion = snapshotPerVersion;
 
+            PersistedCollection = new Collection();
+
             //Recover
-            Recover<T>(data => {
-                Logger.Debug("{0} recovered data {1}", ActorId, data.ToString());
+            Recover<IndividualItem>(data => {
+                Logger.Debug("{0} recovered data", ActorId);
                 RecoverPersistedWorkflowDataHandler(data); 
             });
 
             Recover<SnapshotOffer>(offer => {
-                Logger.Debug("{0} offered snapshot {1}", ActorId, offer.Snapshot.ToString());
-                T data = offer.Snapshot as T;
+                Logger.Debug("{0} offered snapshot", ActorId);
+                Collection data = offer.Snapshot as Collection;
                 RecoverPersistedSnapshotWorkflowDataHandler(data);
             });
 
@@ -103,6 +104,18 @@ namespace DevelApp.Workflow.Actors
         /// </summary>
         protected int ActorInstance { get; }
 
+        #region Message handling
+
+        /// <summary>
+        /// Handle incoming Workflow Messages
+        /// </summary>
+        /// <param name="message"></param>
+        protected abstract void WorkflowMessageHandler(WorkflowMessage message);
+
+        #endregion
+
+        #region Lifetime handling
+
         /// <summary>
         /// Increment Monitoring Actor Created
         /// </summary>
@@ -121,15 +134,35 @@ namespace DevelApp.Workflow.Actors
             base.PostStop();
         }
 
+        #endregion
+
+        #region Persitence Handling
+
+        private int _snapshotPerVersion;
+        private int _persistsSinceLastSnapshot;
+
+        //TODO Handle persist errors. Perhaps degraded
+
+        protected override void OnReplaySuccess()
+        {
+            DoLastActionsAfterRecover();
+            base.OnReplaySuccess();
+        }
+
+        /// <summary>
+        /// Called when a recover succeeded
+        /// </summary>
+        protected abstract void DoLastActionsAfterRecover();
+
         /// <summary>
         /// Persists data in versions until snapshotPerVersion
         /// </summary>
         /// <param name="data"></param>
-        protected void PersistWorkflowData(T data)
+        protected void PersistWorkflowData(IndividualItem data)
         {
             if (_snapshotPerVersion <= 1)
             {
-                SaveSnapshot(data);
+                SaveSnapshot(PersistedCollection);
             }
             else
             {
@@ -138,7 +171,7 @@ namespace DevelApp.Workflow.Actors
                     if (++_persistsSinceLastSnapshot % _snapshotPerVersion == 0)
                     {
                         //time to save a snapshot
-                        SaveSnapshot(data);
+                        SaveSnapshot(PersistedCollection);
                     }
                 });
             }
@@ -149,19 +182,20 @@ namespace DevelApp.Workflow.Actors
         /// Used for recovering from crash
         /// </summary>
         /// <param name="data"></param>
-        protected abstract void RecoverPersistedWorkflowDataHandler(T data);
+        protected abstract void RecoverPersistedWorkflowDataHandler(IndividualItem dataItem);
 
         /// <summary>
         /// Snapshot is offered to start Recover process
         /// </summary>
         /// <param name="data"></param>
-        protected abstract void RecoverPersistedSnapshotWorkflowDataHandler(T data);
+        private void RecoverPersistedSnapshotWorkflowDataHandler(Collection persistedCollection)
+        {
+            PersistedCollection = persistedCollection;
+        }
 
-        /// <summary>
-        /// Handle incoming Workflow Messages
-        /// </summary>
-        /// <param name="message"></param>
-        protected abstract void WorkflowMessageHandler(WorkflowMessage message);
+        #endregion
+
+        #region Deadletter handling
 
         /// <summary>
         /// Handles DeadletterHandlingMessage. Default is to log and ignore
@@ -171,5 +205,7 @@ namespace DevelApp.Workflow.Actors
         {
             Logger.Debug("{0} received message {1}", ActorId, message.ToString());
         }
+
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
@@ -11,7 +12,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Singleton parent of potentially multiple DataOwnerActor
     /// </summary>
-    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor<string>
+    public class DataOwnerCoordinatorActor : AbstractPersistedWorkflowActor<IDataOwnerCRUDMessage, Dictionary<string, IDataOwnerCRUDMessage>>
     {
         protected override VersionNumber ActorVersion
         {
@@ -21,14 +22,14 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(string data)
+        protected override void RecoverPersistedWorkflowDataHandler(IDataOwnerCRUDMessage data)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
-        {
-            throw new NotImplementedException();
+            switch(data.CRUDMessageType)
+            {
+                case Model.CRUDMessageType.Create:
+                    CreateDataOwnerMessage createDataOwnerMessage = data as CreateDataOwnerMessage;
+                    break;
+            }
         }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
@@ -62,6 +63,11 @@ namespace DevelApp.Workflow.Actors
                     //Fallback to Default Stategy if not handled
                     return Akka.Actor.SupervisorStrategy.DefaultStrategy.Decider.Decide(ex);
                 });
+        }
+
+        protected override void DoLastActionsAfterRecover()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -52,5 +52,13 @@ namespace DevelApp.Workflow.SchemaBuilder
                 return "The easy definition of the schema of a workflow";
             }
         }
+
+        public override string Module
+        {
+            get
+            {
+                return "Workflow";
+            }
+        }
     }
 }
