@@ -19,9 +19,14 @@ namespace DevelApp.JsonSchemaBuilder
                 string name = GetType().Name;
                 string nameWithoutJsonSchema = name.Replace("JsonSchema", "");
 
-                return GetType().FullName.Replace(name, nameWithoutJsonSchema);
+                return $"{Module}.{nameWithoutJsonSchema}";
             }
         }
+
+        /// <summary>
+        /// Returns the module of the schema
+        /// </summary>
+        public abstract string Module { get; }
 
         /// <summary>
         /// The description of the schema
@@ -36,8 +41,6 @@ namespace DevelApp.JsonSchemaBuilder
         /// <summary>
         /// Write schema to file
         /// </summary>
-        /// <param name="schemaName"></param>
-        /// <param name="jsonSchema"></param>
         /// <param name="filePath"></param>
         public void WriteSchemaToFile(string filePath)
         {
@@ -45,8 +48,9 @@ namespace DevelApp.JsonSchemaBuilder
             if (JsonSchema != null)
             {
                 var schemaInJson = JsonSchema.ToJson(serializer);
+                string fileName = $"{TransformToCorrectCase(Module)}.{TransformToCorrectCase(Name)}{FileEnding}";
 
-                File.WriteAllText(Path.Combine(filePath, SchemaNameToCorrectCase() + FileEnding), schemaInJson.GetIndentedString());
+                File.WriteAllText(Path.Combine(filePath, fileName), schemaInJson.GetIndentedString());
             }
             else
             {
@@ -54,9 +58,9 @@ namespace DevelApp.JsonSchemaBuilder
             }
         }
 
-        private string SchemaNameToCorrectCase()
+        private string TransformToCorrectCase(string stringToTransform)
         {
-            return Name.Substring(0, 1).ToLowerInvariant() + Name.Substring(1);
+            return stringToTransform.Substring(0, 1).ToLowerInvariant() + stringToTransform.Substring(1);
         }
 
         /// <summary>

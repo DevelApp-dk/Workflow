@@ -13,6 +13,11 @@ namespace DevelApp.JsonSchemaBuilder
         string Name { get; }
 
         /// <summary>
+        /// Returns the module of the schema
+        /// </summary>
+        string Module { get; }
+
+        /// <summary>
         /// The description of the schema
         /// </summary>
         string Description { get; }

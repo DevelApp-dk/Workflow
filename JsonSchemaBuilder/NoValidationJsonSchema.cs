@@ -18,5 +18,13 @@ namespace DevelApp.JsonSchemaBuilder
                 return "Represents an empty schema with disabled validation";
             }
         }
+
+        public override string Module
+        {
+            get
+            {
+                return "Default";
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
     <Description>Simple Json Schema builder for Manatee.Json to make it faster to combine in code</Description>
-    <Version>1.0.5</Version>
+    <Version>1.0.8</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
