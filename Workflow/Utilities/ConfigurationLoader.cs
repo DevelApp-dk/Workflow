@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using DevelApp.Workflow.Core.Exceptions;
 
 namespace DevelApp.Workflow.Utilities
 {
@@ -14,14 +15,26 @@ namespace DevelApp.Workflow.Utilities
         /// <summary>
         /// Loads file from disc
         /// </summary>
-        /// <param name="fileNameAndPath"></param>
+        /// <param name="fileNameAndPathUri"></param>
         /// <returns></returns>
-        public static Config LoadFromDisc(string fileNameAndPath)
+        public static Config LoadFromDisc(Uri fileNameAndPathUri)
         {
-            if (File.Exists(fileNameAndPath))
+            if (!fileNameAndPathUri.IsFile)
             {
-                string config = File.ReadAllText(fileNameAndPath);
-                return ConfigurationFactory.ParseString(config);
+                throw new WorkflowStartupException("The supplied Uri is not a file Uri");
+            }
+
+            if (File.Exists(fileNameAndPathUri.LocalPath))
+            {
+                try
+                {
+                    string config = File.ReadAllText(fileNameAndPathUri.LocalPath);
+                    return ConfigurationFactory.ParseString(config);
+                }
+                catch (Exception ex)
+                {
+                    throw new WorkflowStartupException($"Error occured when trying to read configuration file [{fileNameAndPathUri.LocalPath}]", ex);
+                }
             }
 
             return Config.Empty;

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace DevelApp.Workflow.Core.Exceptions
 {
     [Serializable]
-    internal class WorkflowStartupException : Exception
+    public class WorkflowStartupException : Exception
     {
         public WorkflowStartupException()
         {

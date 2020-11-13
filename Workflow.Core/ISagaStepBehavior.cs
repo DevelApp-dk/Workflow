@@ -1,4 +1,5 @@
-﻿using Manatee.Json;
+﻿using DevelApp.RuntimePluggableClassFactory.Interface;
+using Manatee.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace DevelApp.Workflow.Core
     /// <summary>
     /// Defines the topmost interface on StateBehavior which is the executable part of a Workflow. This should not be implemented directly
     /// </summary>
-    public interface ISagaStepBehavior
+    public interface ISagaStepBehavior:IPluginClass
     {
         /// <summary>
         /// Sets the behavior configuration

@@ -1,4 +1,5 @@
-﻿using Manatee.Json;
+﻿using DevelApp.RuntimePluggableClassFactory.Interface;
+using Manatee.Json;
 using Manatee.Json.Schema;
 using System;
 using System.Collections.Generic;
@@ -7,10 +8,31 @@ using System.Text;
 namespace DevelApp.Workflow.Core.AbstractImplementation
 {
     /// <summary>
-    /// Placement of utility functions for all StateBehaviors
+    /// Placement of utility functions for all SagaStepBehaviors
     /// </summary>
     public abstract class AbstractSagaStepBehavior
     {
+        /// <summary>
+        /// Returns the specific name of the sagastep behavior
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return GetType().FullName;
+            }
+        }
+
+        /// <summary>
+        /// Description of the sagastep behavior
+        /// </summary>
+        public abstract string Description { get; }
+
+        /// <summary>
+        /// Returns the version number of the sagastep behavior
+        /// </summary>
+        public abstract int Version { get; }
+
         /// <summary>
         /// SagaStep is gathering data for the SagaStep
         /// </summary>
