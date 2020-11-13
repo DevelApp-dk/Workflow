@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Akka.Actor;
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +35,7 @@ namespace Workflow.AppServer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -51,8 +53,19 @@ namespace Workflow.AppServer
                 endpoints.MapControllers();
             });
 
-            //Setup actors
-            WorkflowDI.
+            #region Autofac
+
+            ContainerBuilder builder = new ContainerBuilder();
+
+            WorkflowDI.Configure(app, env, lifetime, builder);
+
+            var container = builder.Build();
+
+            // Create the ActorSystem and Dependency Resolver
+            var system = app.ApplicationServices.GetService<ActorSystem>();
+            system.UseAutofac(container);
+
+            #endregion
         }
     }
 }

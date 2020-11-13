@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>DevelApp.Workflow.AutoFac</PackageId>
     <Company>DevelApp Denmark (CVR 33211740)</Company>
     <Authors>Lars Shakya Buch-Jepsen</Authors>
@@ -14,11 +14,12 @@ DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy 
     <Product>DevelApp.Workflow.AutoFac</Product>
     <AssemblyName>DevelApp.Workflow.AutoFac</AssemblyName>
     <RootNamespace>DevelApp.Workflow.AutoFac</RootNamespace>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -27,7 +28,8 @@ DevelApp.Workflow which is an oppinionated Workflow for Akka.Net making it easy 
 
   <ItemGroup>
     <PackageReference Include="Akka.DI.Autofac" Version="1.4.1" />
-    <PackageReference Include="develapp.workflow" Version="1.0.5" />
+    <PackageReference Include="DevelApp.RuntimePluggableClassFactory" Version="1.0.2" />
+    <PackageReference Include="develapp.workflow" Version="1.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.9" />

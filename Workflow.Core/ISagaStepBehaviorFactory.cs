@@ -13,6 +13,6 @@ namespace DevelApp.Workflow.Core
         /// </summary>
         /// <param name="behaviorName"></param>
         /// <returns></returns>
-        ISagaStepBehavior GetStateBehavior(KeyString behaviorName, VersionNumber version, JsonValue behaviorConfiguration);
+        ISagaStepBehavior GetSagaStepBehavior(KeyString behaviorName, VersionNumber version, JsonValue behaviorConfiguration);
     }
 }
