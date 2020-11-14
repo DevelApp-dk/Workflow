@@ -29,5 +29,13 @@ namespace DevelApp.Workflow.Messages
         /// Returns the data owner definition
         /// </summary>
         public DataOwnerDefinition DataOwnerDefinition { get; }
+
+        public CRUDMessageType CRUDMessageType
+        {
+            get
+            {
+                return CRUDMessageType.Create;
+            }
+        }
     }
 }
