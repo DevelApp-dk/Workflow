@@ -19,9 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Workflow.AutoFac", "Workflo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Workflow.AppServer", "Workflow.AppServer\Workflow.AppServer.csproj", "{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSchemaBuilder", "JsonSchemaBuilder\JsonSchemaBuilder.csproj", "{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{67A7923E-431A-4E25-B37B-F718AD3AD15A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{67A7923E-431A-4E25-B37B-F718AD3AD15A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +47,6 @@ Global
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F42A6CB-FCF8-43DB-9FCB-B0DBF6D31069}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A18E97B4-EF13-4ADB-B51C-D43FC6B61BDE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67A7923E-431A-4E25-B37B-F718AD3AD15A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{67A7923E-431A-4E25-B37B-F718AD3AD15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67A7923E-431A-4E25-B37B-F718AD3AD15A}.Release|Any CPU.ActiveCfg = Release|Any CPU
