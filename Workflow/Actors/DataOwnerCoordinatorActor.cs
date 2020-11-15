@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.DI.Core;
 using Akka.Monitoring;
 using DevelApp.Workflow.Core.Exceptions;
 using DevelApp.Workflow.Core.Model;
@@ -24,14 +25,38 @@ namespace DevelApp.Workflow.Actors
                 PersistWorkflowData(message);
                 DataOwnerCRUDMessageHandler(message);
             });
+
+            Command<LookupDataOwnerMessage>(message => {
+                Context.IncrementMessagesReceived();
+                LookupDataOwnerMessageHandler(message);
+            });
         }
 
-        protected override VersionNumber ActorVersion
+        #region Handlers
+
+        private void LookupDataOwnerMessageHandler(LookupDataOwnerMessage message)
         {
-            get
+            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.Version));
+            if(actorRef == ActorRefs.Nobody)
             {
-                return 1;
+                Sender.Tell(new LookupDataOwnerFailedMessage(message.DataOwnerKey));
             }
+            else
+            {
+                Sender.Tell(new LookupDataOwnerSucceededMessage(message.DataOwnerKey, actorRef));
+            }
+        }
+
+        private IActorRef LookupDataOwner(KeyString dataOwnerKey, VersionNumber versionNumber)
+        {
+            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<int, IActorRef> versions))
+            {
+                if (versions.TryGetValue(versionNumber, out IActorRef actorRef))
+                {
+                    return actorRef;
+                }
+            }
+            return ActorRefs.Nobody;
         }
 
         protected override void RecoverPersistedWorkflowDataHandler(IDataOwnerCRUDMessage data)
@@ -45,17 +70,24 @@ namespace DevelApp.Workflow.Actors
             {
                 case Model.CRUDMessageType.Create:
                     CreateDataOwnerMessage createDataOwnerMessage = message as CreateDataOwnerMessage;
-                    //Create dataOwner from createDataOwnerMessage.DataOwnerDefinition and pass createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions to child
-                    string instanceName = BuildInstanceName(createDataOwnerMessage.DataOwnerDefinition);
+                    //Create dataOwner from createDataOwnerMessage.DataOwnerDefinition and 
+                    string name = createDataOwnerMessage.DataOwnerDefinition.Name;
+                    int version = (int)createDataOwnerMessage.DataOwnerDefinition.Version;
+                    string instanceName = BuildInstanceName(name, version);
                     if (Context.Child(instanceName) == ActorRefs.Nobody)
                     {
                         try
                         {
-                            Context.
+                            var actorProps = Context.DI().Props<DataOwnerActor>();
+                            //TODO Add router for the actor for different instances
 
+                            var myActorRef = Context.ActorOf(actorProps, instanceName);
 
+                            _dataOwners.Add(createDataOwnerMessage.DataOwnerDefinition.Name, new Dictionary<int, IActorRef>() { {version, myActorRef } });
 
-                            Sender.Tell(new CreateDataOwnerSucceededMessage(createDataOwnerMessage.DataOwnerKey));
+                            //TODO pass createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions to child
+
+                            Sender.Tell(new CreateDataOwnerSucceededMessage(createDataOwnerMessage.DataOwnerKey, myActorRef));
                         }
                         catch (Exception ex)
                         {
@@ -77,10 +109,6 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        private string BuildInstanceName(DataOwnerDefinition dataOwnerDefinition)
-        {
-            throw new NotImplementedException();
-        }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
@@ -90,6 +118,18 @@ namespace DevelApp.Workflow.Actors
                     Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
                     Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
                     break;
+            }
+        }
+
+        #endregion
+
+        private Dictionary<string, Dictionary<int, IActorRef>> _dataOwners = new Dictionary<string, Dictionary<int, IActorRef>>();
+
+        protected override VersionNumber ActorVersion
+        {
+            get
+            {
+                return 1;
             }
         }
 

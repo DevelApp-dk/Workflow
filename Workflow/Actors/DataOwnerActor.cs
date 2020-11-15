@@ -1,5 +1,7 @@
 ﻿using Akka.Actor;
+using Akka.Monitoring;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
@@ -11,8 +13,22 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Parent of multiple ModuleActor
     /// </summary>
-    public class DataOwnerActor : AbstractPersistedWorkflowActor<string>
+    public class DataOwnerActor : AbstractPersistedWorkflowActor<IModuleCRUDMessage, Dictionary<string, IModuleCRUDMessage>>
     {
+        public DataOwnerActor()
+        {
+            Command<IModuleCRUDMessage>(message => {
+                Context.IncrementMessagesReceived();
+                PersistWorkflowData(message);
+                ModuleCRUDMessageHandler(message);
+            });
+        }
+
+        private void ModuleCRUDMessageHandler(IModuleCRUDMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override VersionNumber ActorVersion
         {
             get
@@ -21,14 +37,14 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(string data)
+        protected override void DoLastActionsAfterRecover()
         {
-            throw new NotImplementedException();
+            Logger.Debug("{0} Finished restoring", ActorId);
         }
 
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
+        protected override void RecoverPersistedWorkflowDataHandler(IModuleCRUDMessage dataItem)
         {
-            throw new NotImplementedException();
+            ModuleCRUDMessageHandler(dataItem);
         }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)

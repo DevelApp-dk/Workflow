@@ -79,9 +79,34 @@ namespace DevelApp.Workflow.Actors
         {
             get
             {
-                return GetType().Name.Replace("Actor", "") + $"_{ActorVersion}_{ActorInstance}";
+                return BuildInstanceName(ActorName, ActorVersion, ActorInstance);
             }
         }
+
+        /// <summary>
+        /// Returns Unique actor instance name
+        /// </summary>
+        /// <param name="actorName"></param>
+        /// <param name="actorVersion"></param>
+        /// <param name="actorInstance"></param>
+        /// <returns></returns>
+        protected string BuildInstanceName(KeyString actorName, VersionNumber actorVersion, int actorInstance = 1)
+        {
+            return $"{actorName}_{actorVersion}_{actorInstance}";
+        }
+
+
+        /// <summary>
+        /// ActorName is typically the Key for the actor. Override if not classname without Actor
+        /// </summary>
+        public virtual KeyString ActorName
+        {
+            get
+            {
+                return GetType().Name.Replace("Actor", "");
+            }
+        }
+
 
         /// <summary>
         /// Returns the actor version in positive number
