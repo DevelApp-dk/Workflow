@@ -4,6 +4,7 @@ using DevelApp.Workflow.Core.Exceptions;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
+using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace DevelApp.Workflow.Actors
         {
             Command<IDataOwnerCRUDMessage>(message => {
                 Context.IncrementMessagesReceived();
+                PersistWorkflowData(message);
                 DataOwnerCRUDMessageHandler(message);
             });
         }
@@ -44,13 +46,41 @@ namespace DevelApp.Workflow.Actors
                 case Model.CRUDMessageType.Create:
                     CreateDataOwnerMessage createDataOwnerMessage = message as CreateDataOwnerMessage;
                     //Create dataOwner from createDataOwnerMessage.DataOwnerDefinition and pass createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions to child
+                    string instanceName = BuildInstanceName(createDataOwnerMessage.DataOwnerDefinition);
+                    if (Context.Child(instanceName) == ActorRefs.Nobody)
+                    {
+                        try
+                        {
+                            Context.
+
+
+
+                            Sender.Tell(new CreateDataOwnerSucceededMessage(createDataOwnerMessage.DataOwnerKey));
+                        }
+                        catch (Exception ex)
+                        {
+                            Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage.DataOwnerKey, ex));
+                        }
+                    }
+                    else
+                    {
+                        Logger.Debug("{0} received a {1} for a already existing DataOwner", ActorId, typeof(CreateDataOwnerMessage).Name);
+                        Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage.DataOwnerKey));
+                    }
                     break;
+                case CRUDMessageType.Delete:
+                    //Delete children with or without the data
+                    throw new NotImplementedException();
                 default:
                     //TODO delete
                     throw new WorkflowStartupException("CRUD Message Type Not Implemented");
             }
         }
 
+        private string BuildInstanceName(DataOwnerDefinition dataOwnerDefinition)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
@@ -87,7 +117,7 @@ namespace DevelApp.Workflow.Actors
 
         protected override void DoLastActionsAfterRecover()
         {
-            throw new NotImplementedException();
+            Logger.Debug("{0} Finished restoring", ActorId);
         }
     }
 }
