@@ -26,7 +26,7 @@ namespace DevelApp.Workflow.Messages
             }
         }
 
-        public VersionNumber Version
+        public VersionNumber DataOwnerVersion
         {
             get
             {
@@ -56,25 +56,29 @@ namespace DevelApp.Workflow.Messages
 
         public CreateDataOwnerFailedMessage(CreateDataOwnerMessage createDataOwnerMessage, Exception ex, string errorMessage)
         {
-            DataOwnerKey = dataOwnerKey;
+            DataOwnerKey = (string)createDataOwnerMessage.DataOwnerKey;
+            DataOwnerVersion = (int)createDataOwnerMessage.DataOwnerVersion;
+            ErrorMessage = errorMessage;
             Exception = ex;
         }
 
         public KeyString DataOwnerKey { get; }
+        public VersionNumber DataOwnerVersion { get; }
+        public string ErrorMessage { get; }
         public Exception Exception { get; }
     }
 
     public class CreateDataOwnerSucceededMessage
     {
-        public CreateDataOwnerSucceededMessage(KeyString dataOwnerKey, IActorRef dataOwnerActorRef)
+        public CreateDataOwnerSucceededMessage(CreateDataOwnerMessage createDataOwnerMessage, IActorRef dataOwnerActorRef)
         {
-            DataOwnerKey = dataOwnerKey;
+            DataOwnerKey = (string)createDataOwnerMessage.DataOwnerKey;
+            DataOwnerVersion = (int)createDataOwnerMessage.DataOwnerVersion;
             DataOwnerActorRef = dataOwnerActorRef;
         }
 
         public KeyString DataOwnerKey { get; }
-
+        public VersionNumber DataOwnerVersion { get; }
         public IActorRef DataOwnerActorRef { get; }
     }
-
 }

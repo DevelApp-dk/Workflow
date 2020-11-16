@@ -24,9 +24,52 @@ namespace DevelApp.Workflow.Messages
             }
         }
 
+        public VersionNumber ModuleVersion
+        {
+            get
+            {
+                return ModuleDefinition.Version;
+            }
+        }
+
+
         /// <summary>
         /// Returns the module definition
         /// </summary>
         public ModuleDefinition ModuleDefinition { get; }
+    }
+
+    public class CreateDataOwnerFailedMessage
+    {
+        public CreateModuleFailedMessage(CreateModuleMessage createModuleMessage, string errorMessage) : this(createModuleMessage, null, errorMessage)
+        {
+        }
+
+        public CreatemoduleFailedMessage(CreateModuleMessage createModuleMessage, Exception ex, string errorMessage)
+        {
+            ModuleKey = (string)createModuleMessage.ModuleKey;
+            ModuleVersion = (int)createModuleMessage.ModuleVersion;
+            ErrorMessage = errorMessage;
+            Exception = ex;
+        }
+
+        public KeyString ModuleKey { get; }
+        public VersionNumber ModuleVersion { get; }
+        public string ErrorMessage { get; }
+        public Exception Exception { get; }
+    }
+
+    public class CreateModuleSucceededMessage
+    {
+        public CreateModuleSucceededMessage(CreateModuleMessage createModuleMessage, IActorRef moduleActorRef)
+        {
+            ModuleKey = (string)createModuleMessage.ModuleKey;
+            ModuleVersion = (int)createModuleMessage.ModuleVersion;
+            ModuleActorRef = moduleActorRef;
+        }
+
+        public KeyString ModuleKey { get; }
+        public VersionNumber ModuleVersion { get; }
+        public IActorRef ModuleActorRef { get; }
     }
 }

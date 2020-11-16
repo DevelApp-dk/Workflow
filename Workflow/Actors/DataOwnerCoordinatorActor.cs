@@ -31,6 +31,18 @@ namespace DevelApp.Workflow.Actors
                 Context.IncrementMessagesReceived();
                 LookupDataOwnerMessageHandler(message);
             });
+
+
+            #region Ignored Messages
+
+            Command<CreateModuleFailedMessage>(message => {
+                //ignore
+            });
+            Command<CreateModuleSuccededMessage>(message => {
+                //ignore
+            });
+
+            #endregion
         }
 
         #region Handlers
@@ -40,11 +52,11 @@ namespace DevelApp.Workflow.Actors
             IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.DataOwnerVersion);
             if(actorRef == ActorRefs.Nobody)
             {
-                Sender.Tell(new LookupDataOwnerFailedMessage(message.DataOwnerKey));
+                Sender.Tell(new LookupDataOwnerFailedMessage(message));
             }
             else
             {
-                Sender.Tell(new LookupDataOwnerSucceededMessage(message.DataOwnerKey, actorRef));
+                Sender.Tell(new LookupDataOwnerSucceededMessage(message, actorRef));
             }
         }
 
@@ -69,23 +81,28 @@ namespace DevelApp.Workflow.Actors
                             var actorProps = Context.DI().Props<DataOwnerActor>();
                             //TODO Add router for the actor for different instances
 
-                            var myActorRef = Context.ActorOf(actorProps, instanceName);
+                            var dataOwnerRef = Context.ActorOf(actorProps, instanceName);
 
-                            _dataOwners.Add(createDataOwnerMessage.DataOwnerDefinition.Name, new Dictionary<int, IActorRef>() { {version, myActorRef } });
+                            _dataOwners.Add(name, new Dictionary<int, IActorRef>() { {version, dataOwnerRef } });
 
-                            //TODO pass createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions to child
-
-                            Sender.Tell(new CreateDataOwnerSucceededMessage(createDataOwnerMessage.DataOwnerKey, myActorRef));
+                            foreach (ModuleDefinition moduleDefinition in createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions)
+                            {
+                                dataOwnerRef.Tell(new CreateModuleMessage(moduleDefinition));
+                            }
+                            Sender.Tell(new CreateDataOwnerSucceededMessage(createDataOwnerMessage, dataOwnerRef));
                         }
                         catch (Exception ex)
                         {
-                            Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage.DataOwnerKey, ex));
+                            string errorMessage = string.Format("{0} failed in {1}", ActorId, typeof(CreateDataOwnerMessage).Name);
+                            Logger.Error(ex,errorMessage);
+                            Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage, ex, errorMessage));
                         }
                     }
                     else
                     {
-                        Logger.Debug("{0} received a {1} for a already existing DataOwner", ActorId, typeof(CreateDataOwnerMessage).Name);
-                        Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage.DataOwnerKey));
+                        string errorMessage = string.Format("{0} received a {1} for a already existing DataOwner", ActorId, typeof(CreateDataOwnerMessage).Name);
+                        Logger.Debug(errorMessage);
+                        Sender.Tell(new CreateDataOwnerFailedMessage(createDataOwnerMessage, errorMessage));
                     }
                     break;
                 case CRUDMessageType.Delete:
