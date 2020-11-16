@@ -1,8 +1,6 @@
 ﻿using Akka.Actor;
 using Manatee.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Messages
 {

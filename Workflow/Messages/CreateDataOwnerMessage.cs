@@ -1,4 +1,5 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using Akka.Actor;
+using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Model;
 using System;
@@ -25,6 +26,14 @@ namespace DevelApp.Workflow.Messages
             }
         }
 
+        public VersionNumber Version
+        {
+            get
+            {
+                return DataOwnerDefinition.Version;
+            }
+        }
+
         /// <summary>
         /// Returns the data owner definition
         /// </summary>
@@ -38,4 +47,34 @@ namespace DevelApp.Workflow.Messages
             }
         }
     }
+
+    public class CreateDataOwnerFailedMessage
+    {
+        public CreateDataOwnerFailedMessage(CreateDataOwnerMessage createDataOwnerMessage, string errorMessage):this(createDataOwnerMessage, null, errorMessage)
+        {
+        }
+
+        public CreateDataOwnerFailedMessage(CreateDataOwnerMessage createDataOwnerMessage, Exception ex, string errorMessage)
+        {
+            DataOwnerKey = dataOwnerKey;
+            Exception = ex;
+        }
+
+        public KeyString DataOwnerKey { get; }
+        public Exception Exception { get; }
+    }
+
+    public class CreateDataOwnerSucceededMessage
+    {
+        public CreateDataOwnerSucceededMessage(KeyString dataOwnerKey, IActorRef dataOwnerActorRef)
+        {
+            DataOwnerKey = dataOwnerKey;
+            DataOwnerActorRef = dataOwnerActorRef;
+        }
+
+        public KeyString DataOwnerKey { get; }
+
+        public IActorRef DataOwnerActorRef { get; }
+    }
+
 }

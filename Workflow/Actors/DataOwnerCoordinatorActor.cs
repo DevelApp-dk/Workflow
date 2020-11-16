@@ -9,6 +9,7 @@ using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DevelApp.Workflow.Actors
@@ -36,7 +37,7 @@ namespace DevelApp.Workflow.Actors
 
         private void LookupDataOwnerMessageHandler(LookupDataOwnerMessage message)
         {
-            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.Version));
+            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.DataOwnerVersion);
             if(actorRef == ActorRefs.Nobody)
             {
                 Sender.Tell(new LookupDataOwnerFailedMessage(message.DataOwnerKey));
@@ -45,18 +46,6 @@ namespace DevelApp.Workflow.Actors
             {
                 Sender.Tell(new LookupDataOwnerSucceededMessage(message.DataOwnerKey, actorRef));
             }
-        }
-
-        private IActorRef LookupDataOwner(KeyString dataOwnerKey, VersionNumber versionNumber)
-        {
-            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<int, IActorRef> versions))
-            {
-                if (versions.TryGetValue(versionNumber, out IActorRef actorRef))
-                {
-                    return actorRef;
-                }
-            }
-            return ActorRefs.Nobody;
         }
 
         protected override void RecoverPersistedWorkflowDataHandler(IDataOwnerCRUDMessage data)
@@ -70,7 +59,6 @@ namespace DevelApp.Workflow.Actors
             {
                 case Model.CRUDMessageType.Create:
                     CreateDataOwnerMessage createDataOwnerMessage = message as CreateDataOwnerMessage;
-                    //Create dataOwner from createDataOwnerMessage.DataOwnerDefinition and 
                     string name = createDataOwnerMessage.DataOwnerDefinition.Name;
                     int version = (int)createDataOwnerMessage.DataOwnerDefinition.Version;
                     string instanceName = BuildInstanceName(name, version);
@@ -131,6 +119,28 @@ namespace DevelApp.Workflow.Actors
             {
                 return 1;
             }
+        }
+
+        /// <summary>
+        /// Looks up an acrive DataOwner child. If version is not supplied the highest version is returned
+        /// </summary>
+        /// <param name="dataOwnerKey"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        private IActorRef LookupDataOwner(KeyString dataOwnerKey, VersionNumber version = null)
+        {
+            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<int, IActorRef> versions))
+            {
+                if (version == null && versions != null)
+                {
+                    return versions[versions.Max(v => v.Key)];
+                }
+                else if (versions != null && versions.TryGetValue(version, out IActorRef actorRef))
+                {
+                    return actorRef;
+                }
+            }
+            return ActorRefs.Nobody;
         }
 
         /// <summary>
