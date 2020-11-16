@@ -9,6 +9,7 @@ using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -21,24 +22,46 @@ namespace DevelApp.Workflow.Actors
     {
         public DataOwnerCoordinatorActor()
         {
-            Command<IDataOwnerCRUDMessage>(message => {
+            Command<IDataOwnerCRUDMessage>(message =>
+            {
                 Context.IncrementMessagesReceived();
                 PersistWorkflowData(message);
                 DataOwnerCRUDMessageHandler(message);
             });
 
-            Command<LookupDataOwnerMessage>(message => {
+            Command<LookupDataOwnerMessage>(message =>
+            {
                 Context.IncrementMessagesReceived();
                 LookupDataOwnerMessageHandler(message);
             });
 
+            Command<LookupModuleMessage>(message =>
+            {
+                LookupModuleMessageHandler(message);
+            });
+
+            Command<LookupWorkflowMessage>(message =>
+            {
+                LookupWorkflowMessageHandler(message);
+            });
+
+            Command<LookupSagaMessage>(message =>
+            {
+                LookupSagaMessageHandler(message);
+            });
+
+            Command<ListAllDataOwnersMessage>(message =>
+            {
+                Context.IncrementMessagesReceived();
+                ListAllDataOwnersMessageHandler(message);
+            });
 
             #region Ignored Messages
 
             Command<CreateModuleFailedMessage>(message => {
                 //ignore
             });
-            Command<CreateModuleSuccededMessage>(message => {
+            Command<CreateModuleSucceededMessage>(message => {
                 //ignore
             });
 
@@ -58,6 +81,61 @@ namespace DevelApp.Workflow.Actors
             {
                 Sender.Tell(new LookupDataOwnerSucceededMessage(message, actorRef));
             }
+        }
+
+        private void LookupModuleMessageHandler(LookupModuleMessage message)
+        {
+            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.DataOwnerVersion);
+            if (actorRef == ActorRefs.Nobody)
+            {
+                Sender.Tell(new LookupModuleFailedMessage(message));
+            }
+            else
+            {
+                actorRef.Forward(message);
+            }
+        }
+
+        private void LookupWorkflowMessageHandler(LookupWorkflowMessage message)
+        {
+            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.DataOwnerVersion);
+            if (actorRef == ActorRefs.Nobody)
+            {
+                Sender.Tell(new LookupWorkflowFailedMessage(message));
+            }
+            else
+            {
+                actorRef.Forward(message);
+            }
+        }
+
+        private void LookupSagaMessageHandler(LookupSagaMessage message)
+        {
+            IActorRef actorRef = LookupDataOwner(message.DataOwnerKey, message.DataOwnerVersion);
+            if (actorRef == ActorRefs.Nobody)
+            {
+                Sender.Tell(new LookupSagaFailedMessage(message));
+            }
+            else
+            {
+                actorRef.Forward(message);
+            }
+        }
+
+        private void ListAllDataOwnersMessageHandler(ListAllDataOwnersMessage message)
+        {
+            List<(KeyString, ReadOnlyCollection<VersionNumber>)> dataOwners = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
+
+            foreach(var dataOwnerPair in _dataOwners)
+            {
+                List<VersionNumber> versions = new List<VersionNumber>();
+                foreach(var version in dataOwnerPair.Value.Keys)
+                {
+                    versions.Add(version);
+                }
+                dataOwners.Add((dataOwnerPair.Key, versions.AsReadOnly()));
+            }
+            Sender.Tell(new ListAllDataOwnersSucceededMessage(dataOwners.AsReadOnly()));
         }
 
         protected override void RecoverPersistedWorkflowDataHandler(IDataOwnerCRUDMessage data)

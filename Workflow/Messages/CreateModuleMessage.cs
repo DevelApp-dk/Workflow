@@ -1,8 +1,7 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using Akka.Actor;
+using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Messages
 {
@@ -39,13 +38,13 @@ namespace DevelApp.Workflow.Messages
         public ModuleDefinition ModuleDefinition { get; }
     }
 
-    public class CreateDataOwnerFailedMessage
+    public class CreateModuleFailedMessage
     {
         public CreateModuleFailedMessage(CreateModuleMessage createModuleMessage, string errorMessage) : this(createModuleMessage, null, errorMessage)
         {
         }
 
-        public CreatemoduleFailedMessage(CreateModuleMessage createModuleMessage, Exception ex, string errorMessage)
+        public CreateModuleFailedMessage(CreateModuleMessage createModuleMessage, Exception ex, string errorMessage)
         {
             ModuleKey = (string)createModuleMessage.ModuleKey;
             ModuleVersion = (int)createModuleMessage.ModuleVersion;
