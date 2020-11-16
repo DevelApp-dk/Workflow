@@ -10,6 +10,7 @@ using Manatee.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace DevelApp.Workflow.Actors
@@ -107,7 +108,7 @@ namespace DevelApp.Workflow.Actors
         {
             List<(KeyString, ReadOnlyCollection<VersionNumber>)> modules = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
 
-            foreach (var modulePair in _dataOwners)
+            foreach (var modulePair in _modules)
             {
                 List<VersionNumber> versions = new List<VersionNumber>();
                 foreach (var version in modulePair.Value.Keys)
@@ -138,7 +139,6 @@ namespace DevelApp.Workflow.Actors
                         try
                         {
                             var actorProps = Context.DI().Props<ModuleActor>();
-                            //TODO Add router for the actor for different instances
 
                             var moduleRef = Context.ActorOf(actorProps, instanceName);
 
@@ -196,16 +196,16 @@ namespace DevelApp.Workflow.Actors
                 return 1;
             }
         }
-        hertil
+        
         /// <summary>
-        /// Looks up an acrive DataOwner child. If version is not supplied the highest version is returned
+        /// Looks up an active Module child. If version is not supplied the highest version is returned
         /// </summary>
-        /// <param name="dataOwnerKey"></param>
+        /// <param name="moduleKey"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        private IActorRef LookupDataOwner(KeyString dataOwnerKey, VersionNumber version = null)
+        private IActorRef LookupModule(KeyString moduleKey, VersionNumber version = null)
         {
-            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<int, IActorRef> versions))
+            if (_modules.TryGetValue(moduleKey, out Dictionary<int, IActorRef> versions))
             {
                 if (version == null && versions != null)
                 {

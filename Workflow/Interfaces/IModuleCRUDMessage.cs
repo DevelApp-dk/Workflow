@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DevelApp.Workflow.Model;
 
 namespace DevelApp.Workflow.Interfaces
 {
     public interface IModuleCRUDMessage
     {
+        CRUDMessageType CRUDMessageType { get; }
     }
 }
