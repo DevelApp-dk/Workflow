@@ -1,25 +1,38 @@
 ﻿using Akka.Actor;
+using Akka.Monitoring;
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
 using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
+using System.Collections.Generic;
 
 namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor<Saga, Saga>
+    public class SagaActor : AbstractPersistedWorkflowActor<ISagaMessage, List<ISagaMessage>>
     {
         private Model.Workflow _workflow;
 
-        public SagaActor(Model.Workflow workflow, KeyString sagaKey) :base(snapshotPerVersion: 1)
+        public SagaActor(Model.Workflow workflow, KeyString sagaKey)
         {
             SagaKey = sagaKey;
             _workflow = workflow;
+            Saga = new Saga();
+
+            Command<ISagaMessage>(message =>
+            {
+                Context.IncrementMessagesReceived();
+                PersistWorkflowData(message);
+                SagaMessageHandler(message);
+            });
         }
+
+        protected Saga Saga { get; }
 
         protected override VersionNumber ActorVersion
         {
@@ -74,13 +87,19 @@ namespace DevelApp.Workflow.Actors
 
         protected override void DoLastActionsAfterRecover()
         {
-            //TODO see if actions needs to continue based on Saga
-            throw new NotImplementedException();
+            //Pickup where last message died
+            ISagaMessage latestSagaMessage = PersistedCollection[PersistedCollection.Count - 1];
+            SagaMessageHandler(latestSagaMessage);
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(Saga dataItem)
+        protected override void RecoverPersistedWorkflowDataHandler(ISagaMessage dataItem)
         {
-            Logger.Warning("{0} Did received message RecoverPersistedWorkflowDataHandler but should not as only snapshot should be used");
+            SagaMessageHandler(dataItem, changeStateOnly:true);
+        }
+
+        private void SagaMessageHandler(ISagaMessage sagaMessage, bool changeStateOnly = false)
+        {
+            throw new NotImplementedException();
         }
     }
 }
