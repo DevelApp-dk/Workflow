@@ -1,4 +1,6 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Model;
 using DoubleLinkedDirectedGraph;
 using Manatee.Json;
 using Quartz;
@@ -11,22 +13,25 @@ namespace DevelApp.Workflow.Model
 {
     public class Workflow
     {
-        private DoubleLinkedDirectedGraph<NodeData, EdgeData> internalWorkflow = new DoubleLinkedDirectedGraph<NodeData, EdgeData>();
+        private DoubleLinkedDirectedGraph<NodeData, EdgeData> _internalWorkflow = new DoubleLinkedDirectedGraph<NodeData, EdgeData>();
+        private ISagaStepBehaviorFactory _sagaStepBehaviorFactory;
 
         /// <summary>
         /// Builds workflow from workflow template
         /// </summary>
         /// <param name="workflow"></param>
-        public Workflow(WorkflowDefinition workflowDefinition)
+        public Workflow(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory)
         {
             Name = workflowDefinition.Name;
-            Version = (int) workflowDefinition.Version;
+            Version = workflowDefinition.Version;
+            _sagaStepBehaviorFactory = sagaStepBehaviorFactory;
 
             //Add all edges starting from "START" with their nodes
-            foreach(WorkflowDefinition.Edge edge in workflowDefinition.Edges.Where(e=>e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)))
+            foreach (WorkflowDefinition.Edge edge in workflowDefinition.Edges.Where(e=>e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)))
             {
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
-                internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                CheckIfSagaStepBehaviorExists(toNode);
+                _internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
             }
 
             //Add all remaining edges with their nodes
@@ -34,14 +39,37 @@ namespace DevelApp.Workflow.Model
             while(nonInsertedEdges.Count > 0)
             {
                 //Select first that have an included nodekey to avoid problems
-                WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
+                WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => _internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
-                internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                CheckIfSagaStepBehaviorExists(toNode);
+                _internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
 
                 nonInsertedEdges.Remove(edge);
             }
 
-            internalWorkflow.FinishGraph();
+            _internalWorkflow.FinishGraph();
+        }
+
+        private void CheckIfSagaStepBehaviorExists(WorkflowDefinition.Node toNode)
+        {
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration);
+            if(sagaStepBehavior == null)
+            {
+                throw new WorkflowStartupException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {toNode.BehaviorKey}.{toNode.BehaviorVersion}");
+            }
+        }
+
+        public ISagaStepBehavior GetSagaStepBehaviorForNode(DoubleLinkedDirectedGraph<NodeData, EdgeData>.Node node)
+        {
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(node.NodeData.BehaviorKey, node.NodeData.BehaviorVersion, node.NodeData.BehaviorConfiguration);
+            if (sagaStepBehavior == null)
+            {
+                throw new WorkflowRuntimeException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {node.NodeData.BehaviorKey}.{node.NodeData.BehaviorVersion}");
+            }
+            else
+            {
+                return sagaStepBehavior;
+            }
         }
 
         /// <summary>
@@ -61,7 +89,7 @@ namespace DevelApp.Workflow.Model
         {
             get
             {
-                return internalWorkflow.Start;
+                return _internalWorkflow.Start;
             }
         }
 
@@ -72,7 +100,7 @@ namespace DevelApp.Workflow.Model
         {
             get
             {
-                return internalWorkflow.End;
+                return _internalWorkflow.End;
             }
         }
 

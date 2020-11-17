@@ -14,13 +14,11 @@ namespace DevelApp.Workflow.Actors
     public class SagaActor : AbstractPersistedWorkflowActor<Saga, Saga>
     {
         private Model.Workflow _workflow;
-        private ISagaStepBehaviorFactory _behaviorFactory;
 
-        public SagaActor(Model.Workflow workflow, KeyString sagaKey, ISagaStepBehaviorFactory behaviorFactory) :base(snapshotPerVersion: 1)
+        public SagaActor(Model.Workflow workflow, KeyString sagaKey) :base(snapshotPerVersion: 1)
         {
             SagaKey = sagaKey;
             _workflow = workflow;
-            _behaviorFactory = behaviorFactory;
         }
 
         protected override VersionNumber ActorVersion
