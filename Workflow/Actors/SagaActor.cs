@@ -2,6 +2,7 @@
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
+using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
 
@@ -10,22 +11,14 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor<string>
+    public class SagaActor : AbstractPersistedWorkflowActor<Saga, Saga>
     {
-        public Guid SagaId { get; }
         private Model.Workflow _workflow;
         private ISagaStepBehaviorFactory _behaviorFactory;
 
-        public SagaActor(Model.Workflow workflow, ISagaStepBehaviorFactory behaviorFactory, Guid sagaId = default)
+        public SagaActor(Model.Workflow workflow, KeyString sagaKey, ISagaStepBehaviorFactory behaviorFactory) :base(snapshotPerVersion: 1)
         {
-            if(sagaId == default)
-            {
-                SagaId = Guid.NewGuid();
-            }
-            else
-            {
-                SagaId = sagaId;
-            }
+            SagaKey = sagaKey;
             _workflow = workflow;
             _behaviorFactory = behaviorFactory;
         }
@@ -38,23 +31,15 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        public override string PersistenceId
+        protected override string ActorId
         {
             get
             {
-                return SagaId.ToString();
+                return SagaKey;
             }
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
-        {
-            throw new NotImplementedException();
-        }
+        protected KeyString SagaKey { get; }
 
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
@@ -87,6 +72,17 @@ namespace DevelApp.Workflow.Actors
                     //Fallback to Default Stategy if not handled
                     return Akka.Actor.SupervisorStrategy.DefaultStrategy.Decider.Decide(ex);
                 });
+        }
+
+        protected override void DoLastActionsAfterRecover()
+        {
+            //TODO see if actions needs to continue based on Saga
+            throw new NotImplementedException();
+        }
+
+        protected override void RecoverPersistedWorkflowDataHandler(Saga dataItem)
+        {
+            Logger.Warning("{0} Did received message RecoverPersistedWorkflowDataHandler but should not as only snapshot should be used");
         }
     }
 }

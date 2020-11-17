@@ -1,11 +1,12 @@
 ﻿using Akka.Actor;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Model;
 using System;
 
 namespace DevelApp.Workflow.Messages
 {
-    public class CreateModuleMessage
+    public class CreateModuleMessage:IModuleCRUDMessage
     {
         public CreateModuleMessage(ModuleDefinition moduleDefinition)
         {
@@ -36,6 +37,14 @@ namespace DevelApp.Workflow.Messages
         /// Returns the module definition
         /// </summary>
         public ModuleDefinition ModuleDefinition { get; }
+
+        public CRUDMessageType CRUDMessageType
+        {
+            get
+            {
+                return CRUDMessageType.Create;
+            }
+        }
     }
 
     public class CreateModuleFailedMessage

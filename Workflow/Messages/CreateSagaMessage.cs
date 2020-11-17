@@ -1,12 +1,18 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using Akka.Actor;
+using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
+using DevelApp.Workflow.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DevelApp.Workflow.Messages
 {
-    public class CreateSagaMessage
+    public class CreateSagaMessage:ISagaCRUDMessage
     {
+        public CreateSagaMessage():this(Guid.NewGuid().ToString())
+        { }
+
         public CreateSagaMessage(KeyString sagaKey)
         {
             SagaKey = sagaKey;
@@ -16,5 +22,44 @@ namespace DevelApp.Workflow.Messages
         /// Returns the Saga unique key
         /// </summary>
         public KeyString SagaKey { get; }
+
+        public CRUDMessageType CRUDMessageType
+        {
+            get
+            {
+                return CRUDMessageType.Create;
+            }
+        }
     }
+
+    public class CreateSagaFailedMessage
+    {
+        public CreateSagaFailedMessage(CreateSagaMessage createSagaMessage, string errorMessage) : this(createSagaMessage, null, errorMessage)
+        {
+        }
+
+        public CreateSagaFailedMessage(CreateSagaMessage createSagaMessage, Exception ex, string errorMessage)
+        {
+            SagaKey = (string)createSagaMessage.SagaKey;
+            ErrorMessage = errorMessage;
+            Exception = ex;
+        }
+
+        public KeyString SagaKey { get; }
+        public string ErrorMessage { get; }
+        public Exception Exception { get; }
+    }
+
+    public class CreateSagaSucceededMessage
+    {
+        public CreateSagaSucceededMessage(CreateSagaMessage createSagaMessage, IActorRef sagaActorRef)
+        {
+            SagaKey = (string)createSagaMessage.SagaKey;
+            SagaActorRef = sagaActorRef;
+        }
+
+        public KeyString SagaKey { get; }
+        public IActorRef SagaActorRef { get; }
+    }
+
 }

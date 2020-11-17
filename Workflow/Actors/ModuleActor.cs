@@ -48,13 +48,6 @@ namespace DevelApp.Workflow.Actors
 
             #region Ignored Messages
 
-            Command<CreateSagaFailedMessage>(message => {
-                //ignore
-            });
-            Command<CreateSagaSucceededMessage>(message => {
-                //ignore
-            });
-
             #endregion
         }
 
