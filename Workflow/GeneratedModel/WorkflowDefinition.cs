@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Manatee.Json;
+using Manatee.Json.Schema;
 using Newtonsoft.Json;
 
 namespace DevelApp.Workflow.Model
@@ -59,6 +60,17 @@ namespace DevelApp.Workflow.Model
 			[JsonProperty("behaviorConfiguration")]
 			public JsonValue BehaviorConfiguration { get; set; }
 
+			/// <summary>
+			/// DataJsonSchemaModuleKey for looking up jsonschema for data
+			/// </summary>
+			[JsonProperty("dataJsonSchemaModuleKey")]
+			public string DataJsonSchemaModuleKey { get; set; }
+
+			/// <summary>
+			/// DataJsonSchemaKey for looking up jsonschema for data
+			/// </summary>
+			[JsonProperty("dataJsonSchemaKey")]
+			public string DataJsonSchemaKey { get; set; }
 		}
 
 
