@@ -1,6 +1,7 @@
 ﻿using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
+using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
@@ -33,7 +34,7 @@ namespace DevelApp.Workflow.Actors
             });
 
             //Commands (like Receive)
-            Command<WorkflowMessage>(message => {
+            Command<IWorkflowMessage>(message => {
                 Context.IncrementMessagesReceived();
                 Logger.Debug("{0} received message {1}", ActorId, message.ToString());
                 WorkflowMessageHandler(message); 
@@ -135,7 +136,7 @@ namespace DevelApp.Workflow.Actors
         /// Handle incoming Workflow Messages
         /// </summary>
         /// <param name="message"></param>
-        protected abstract void WorkflowMessageHandler(WorkflowMessage message);
+        protected abstract void WorkflowMessageHandler(IWorkflowMessage message);
 
         #endregion
 

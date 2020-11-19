@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Persistence;
+using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
@@ -13,7 +14,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Holds a lookup for configuration
     /// </summary>
-    public class ConfigurationActor : AbstractPersistedWorkflowActor<string>
+    public class ConfigurationActor : AbstractPersistedWorkflowActor<IWorkflowMessage, >
     {
         protected override VersionNumber ActorVersion
         {
@@ -23,17 +24,7 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void RecoverPersistedWorkflowDataHandler(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {

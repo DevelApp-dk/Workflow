@@ -51,6 +51,14 @@ namespace DevelApp.Workflow.Messages
         /// Can contain the original sender of the message
         /// </summary>
         public ActorPath OriginalSender { get; }
+
+        /// <summary>
+        /// Returns a instance of an unhandled message
+        /// </summary>
+        public WorkflowUnhandledMessage<T> GetWorkflowUnhandledMessage(string unhandledExplanation, ActorPath replyingReceiver)
+        {
+            return new WorkflowUnhandledMessage<T>(this, unhandledExplanation, replyingReceiver);
+        }
     }
 
     /// <summary>
@@ -58,7 +66,7 @@ namespace DevelApp.Workflow.Messages
     /// </summary>
     public class WorkflowUnhandledMessage<U>:IWorkflowUnhandledMessage
     {
-        public WorkflowUnhandledMessage(WorkflowMessage<U> workflowMessage, string unhandledExplanation, ActorPath replyingReceiver)
+        internal WorkflowUnhandledMessage(WorkflowMessage<U> workflowMessage, string unhandledExplanation, ActorPath replyingReceiver)
         {
             UnhandledExplanation = unhandledExplanation;
             MessageTypeName = workflowMessage.MessageTypeName;

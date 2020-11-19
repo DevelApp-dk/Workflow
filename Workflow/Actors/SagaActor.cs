@@ -14,7 +14,7 @@ namespace DevelApp.Workflow.Actors
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor<ISagaMessage, List<ISagaMessage>>
+    public class SagaActor : AbstractPersistedWorkflowActor<IWorkflowMessage, Saga>
     {
         private Model.Workflow _workflow;
 
@@ -22,14 +22,6 @@ namespace DevelApp.Workflow.Actors
         {
             SagaKey = sagaKey;
             _workflow = workflow;
-            Saga = new Saga();
-
-            Command<ISagaMessage>(message =>
-            {
-                Context.IncrementMessagesReceived();
-                PersistWorkflowData(message);
-                SagaMessageHandler(message);
-            });
         }
 
         protected Saga Saga { get; }
@@ -52,13 +44,13 @@ namespace DevelApp.Workflow.Actors
 
         protected KeyString SagaKey { get; }
 
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch(message.MessageTypeName)
             {
                 default:
                     Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Sender.Tell(message.Get, Self.Path));
                     break;
             }
         }
@@ -92,7 +84,7 @@ namespace DevelApp.Workflow.Actors
             SagaMessageHandler(latestSagaMessage);
         }
 
-        protected override void RecoverPersistedWorkflowDataHandler(ISagaMessage dataItem)
+        protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
         {
             SagaMessageHandler(dataItem, changeStateOnly:true);
         }
