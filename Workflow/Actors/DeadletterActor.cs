@@ -106,20 +106,5 @@ namespace DevelApp.Workflow.Actors
                 }
             }
         }
-
-        private ReadOnlyCollection<(string Name, ActorPath ActorPath)> DetermineRecipient(IActorRef recipient)
-        {
-            List<(string Name, ActorPath ActorPath)> recipientList = new List<(string Name, ActorPath ActorPath)>();
-            ActorPath actorPath = recipient.Path;
-            // Strip all until user or system
-            while (actorPath.Parent != null && !actorPath.Parent.Name.Equals("user") && !actorPath.Parent.Name.Equals("system"))
-            {
-                //Set actorPath to parent if not like root
-                actorPath = actorPath.Parent;
-                recipientList.Add((actorPath.Name, actorPath));
-            }
-            recipientList.Reverse();
-            return recipientList.AsReadOnly();
-        }
     }
 }

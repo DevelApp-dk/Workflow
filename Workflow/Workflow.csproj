@@ -13,7 +13,8 @@
     <Copyright>Copyright © DevelApp 2020</Copyright>
     <AssemblyName>DevelApp.Workflow</AssemblyName>
     <RootNamespace>DevelApp.Workflow</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
