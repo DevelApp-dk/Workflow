@@ -1,6 +1,8 @@
 ﻿using Akka.Actor;
 using Akka.Monitoring;
 using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
@@ -26,15 +28,7 @@ namespace DevelApp.Workflow.Actors
 
         protected Saga Saga { get; }
 
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
-        protected override string ActorId
+        public override string ActorId
         {
             get
             {
@@ -46,11 +40,14 @@ namespace DevelApp.Workflow.Actors
 
         protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
-            switch(message.MessageTypeName)
+            switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(message.Get, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
@@ -80,16 +77,15 @@ namespace DevelApp.Workflow.Actors
         protected override void DoLastActionsAfterRecover()
         {
             //Pickup where last message died
-            ISagaMessage latestSagaMessage = PersistedCollection[PersistedCollection.Count - 1];
-            SagaMessageHandler(latestSagaMessage);
+            throw new NotImplementedException();
         }
 
         protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
         {
-            SagaMessageHandler(dataItem, changeStateOnly:true);
+            throw new NotImplementedException();
         }
 
-        private void SagaMessageHandler(ISagaMessage sagaMessage, bool changeStateOnly = false)
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
         {
             throw new NotImplementedException();
         }

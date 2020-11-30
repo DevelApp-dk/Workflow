@@ -10,13 +10,6 @@ namespace DevelApp.Workflow.Model
 {
     public class Saga:ISaga
     {
-        private SagaActor _sagaActorOwner;
-
-        public Saga(SagaActor sagaActorOwner)
-        {
-            _sagaActorOwner = sagaActorOwner;
-        }
-
         /// <summary>
         /// Possibility to check if SagaStep data is valid before progressing
         /// </summary>

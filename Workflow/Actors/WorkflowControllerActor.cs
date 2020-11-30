@@ -1,4 +1,7 @@
 ﻿using Akka.Actor;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
@@ -10,21 +13,16 @@ namespace DevelApp.Workflow.Actors
 {
     public class WorkflowControllerActor : AbstractWorkflowActor
     {
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }

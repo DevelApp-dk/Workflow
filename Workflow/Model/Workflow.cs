@@ -93,7 +93,7 @@ namespace DevelApp.Workflow.Model
         /// <summary>
         /// Version number of the workflow
         /// </summary>
-        public VersionNumber Version { get; }
+        public SemanticVersionNumber Version { get; }
 
         /// <summary>
         /// Returns all the start nodes
@@ -122,7 +122,7 @@ namespace DevelApp.Workflow.Model
         /// </summary>
         public class NodeData
         { 
-            public NodeData(string description, JsonSchema dataJsonSchema, KeyString behaviorKey, VersionNumber behaviorVersion, JsonValue behaviorConfiguration)
+            public NodeData(string description, JsonSchema dataJsonSchema, KeyString behaviorKey, SemanticVersionNumber behaviorVersion, JsonValue behaviorConfiguration)
             {
                 Description = description;
                 BehaviorKey = behaviorKey;
@@ -149,7 +149,7 @@ namespace DevelApp.Workflow.Model
             /// <summary>
             /// The version of the behavior
             /// </summary>
-            public VersionNumber BehaviorVersion { get; }
+            public SemanticVersionNumber BehaviorVersion { get; }
 
             /// <summary>
             /// The configuration of the behavior

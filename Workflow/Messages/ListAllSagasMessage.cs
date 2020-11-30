@@ -8,11 +8,11 @@ namespace DevelApp.Workflow.Messages
     }
     public class ListAllSagasSucceededMessage
     {
-        public ListAllSagasSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> sagas)
+        public ListAllSagasSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> sagas)
         {
             Sagas = sagas;
         }
 
-        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> Sagas { get; }
+        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> Sagas { get; }
     }
 }

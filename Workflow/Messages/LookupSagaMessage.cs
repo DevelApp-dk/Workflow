@@ -5,7 +5,7 @@ namespace DevelApp.Workflow.Messages
 {
     public class LookupSagaMessage
     {
-        public LookupSagaMessage(KeyString dataOwnerKey, KeyString moduleKey, KeyString workflowKey, KeyString sagaKey, VersionNumber dataOwnerVersion = null, VersionNumber moduleVersion = null, VersionNumber workflowVersion = null)
+        public LookupSagaMessage(KeyString dataOwnerKey, KeyString moduleKey, KeyString workflowKey, KeyString sagaKey, SemanticVersionNumber dataOwnerVersion = null, SemanticVersionNumber moduleVersion = null, SemanticVersionNumber workflowVersion = null)
         {
             DataOwnerKey = dataOwnerKey;
             DataOwnerVersion = dataOwnerVersion;
@@ -17,11 +17,11 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString DataOwnerKey { get; }
-        public VersionNumber DataOwnerVersion { get; }
+        public SemanticVersionNumber DataOwnerVersion { get; }
         public KeyString ModuleKey { get; }
-        public VersionNumber ModuleVersion { get; }
+        public SemanticVersionNumber ModuleVersion { get; }
         public KeyString WorkflowKey { get; }
-        public VersionNumber WorkflowVersion { get; }
+        public SemanticVersionNumber WorkflowVersion { get; }
         public KeyString SagaKey { get; }
     }
 
@@ -39,11 +39,11 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString DataOwnerKey { get; }
-        public VersionNumber DataOwnerVersion { get; }
+        public SemanticVersionNumber DataOwnerVersion { get; }
         public KeyString ModuleKey { get; }
-        public VersionNumber ModuleVersion { get; }
+        public SemanticVersionNumber ModuleVersion { get; }
         public KeyString WorkflowKey { get; }
-        public VersionNumber WorkflowVersion { get; }
+        public SemanticVersionNumber WorkflowVersion { get; }
         public KeyString SagaKey { get; }
     }
 
@@ -62,11 +62,11 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString DataOwnerKey { get; }
-        public VersionNumber DataOwnerVersion { get; }
+        public SemanticVersionNumber DataOwnerVersion { get; }
         public KeyString ModuleKey { get; }
-        public VersionNumber ModuleVersion { get; }
+        public SemanticVersionNumber ModuleVersion { get; }
         public KeyString WorkflowKey { get; }
-        public VersionNumber WorkflowVersion { get; }
+        public SemanticVersionNumber WorkflowVersion { get; }
         public KeyString SagaKey { get; }
         public IActorRef SagaActorRef { get; }
     }

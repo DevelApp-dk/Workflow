@@ -9,11 +9,11 @@ namespace DevelApp.Workflow.Messages
 
     public class ListAllDataOwnersSucceededMessage
     {
-        public ListAllDataOwnersSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> dataOwners)
+        public ListAllDataOwnersSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> dataOwners)
         {
             DataOwners = dataOwners;
         }
 
-        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> DataOwners { get; }
+        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> DataOwners { get; }
     }
 }

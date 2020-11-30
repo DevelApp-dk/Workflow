@@ -106,11 +106,11 @@ namespace DevelApp.Workflow.Actors
 
         private void ListAllModulesMessageHandler(ListAllModulesMessage message)
         {
-            List<(KeyString, ReadOnlyCollection<VersionNumber>)> modules = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
+            List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> modules = new List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)>();
 
             foreach (var modulePair in _modules)
             {
-                List<VersionNumber> versions = new List<VersionNumber>();
+                List<SemanticVersionNumber> versions = new List<SemanticVersionNumber>();
                 foreach (var version in modulePair.Value.Keys)
                 {
                     versions.Add(version);
@@ -189,7 +189,7 @@ namespace DevelApp.Workflow.Actors
 
         private Dictionary<string, Dictionary<int, IActorRef>> _modules = new Dictionary<string, Dictionary<int, IActorRef>>();
 
-        protected override VersionNumber ActorVersion
+        protected override SemanticVersionNumber ActorVersion
         {
             get
             {
@@ -203,7 +203,7 @@ namespace DevelApp.Workflow.Actors
         /// <param name="moduleKey"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        private IActorRef LookupModule(KeyString moduleKey, VersionNumber version = null)
+        private IActorRef LookupModule(KeyString moduleKey, SemanticVersionNumber version = null)
         {
             if (_modules.TryGetValue(moduleKey, out Dictionary<int, IActorRef> versions))
             {

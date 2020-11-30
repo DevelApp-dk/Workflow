@@ -1,5 +1,9 @@
 ﻿using Akka.Actor;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.GeneratedModel;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
 using System;
@@ -8,33 +12,33 @@ using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
-    public class TranslationActor : AbstractPersistedWorkflowActor<string>
+    public class TranslationActor : AbstractPersistedWorkflowActor<IWorkflowMessage, Dictionary<string,Translation>>
     {
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
-        protected override void RecoverPersistedWorkflowDataHandler(string data)
+        protected override void DoLastActionsAfterRecover()
         {
             throw new NotImplementedException();
         }
 
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
         {
             throw new NotImplementedException();
         }
 
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }

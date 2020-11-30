@@ -26,7 +26,7 @@ namespace DevelApp.Workflow.Messages
             }
         }
 
-        public VersionNumber WorkflowVersion
+        public SemanticVersionNumber WorkflowVersion
         {
             get
             {
@@ -63,7 +63,7 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString WorkflowKey { get; }
-        public VersionNumber WorkflowVersion { get; }
+        public SemanticVersionNumber WorkflowVersion { get; }
         public string ErrorMessage { get; }
         public Exception Exception { get; }
     }
@@ -78,7 +78,7 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString WorkflowKey { get; }
-        public VersionNumber WorkflowVersion { get; }
+        public SemanticVersionNumber WorkflowVersion { get; }
         public IActorRef WorkflowActorRef { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace DevelApp.Workflow.Messages
             }
         }
 
-        public VersionNumber DataOwnerVersion
+        public SemanticVersionNumber DataOwnerVersion
         {
             get
             {
@@ -63,7 +63,7 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString DataOwnerKey { get; }
-        public VersionNumber DataOwnerVersion { get; }
+        public SemanticVersionNumber DataOwnerVersion { get; }
         public string ErrorMessage { get; }
         public Exception Exception { get; }
     }
@@ -78,7 +78,7 @@ namespace DevelApp.Workflow.Messages
         }
 
         public KeyString DataOwnerKey { get; }
-        public VersionNumber DataOwnerVersion { get; }
+        public SemanticVersionNumber DataOwnerVersion { get; }
         public IActorRef DataOwnerActorRef { get; }
     }
 }

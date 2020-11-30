@@ -22,7 +22,7 @@ namespace DevelApp.Workflow.Model
 		/// Version: The version number of the workflow
 		/// </summary>
 		[JsonProperty("version")]
-		public long Version { get; set; }
+		public string Version { get; set; }
 
 		/// <summary>
 		/// Node: Definition of an node

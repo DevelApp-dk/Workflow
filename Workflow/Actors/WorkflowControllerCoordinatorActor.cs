@@ -13,14 +13,6 @@ namespace DevelApp.Workflow.Actors
     /// </summary>
     public class WorkflowControllerCoordinatorActor : AbstractWorkflowActor
     {
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
         protected override void WorkflowMessageHandler(WorkflowMessage message)
         {
             switch (message.MessageTypeName)

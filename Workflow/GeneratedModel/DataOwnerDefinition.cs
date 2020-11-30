@@ -15,7 +15,7 @@ namespace DevelApp.Workflow.Model
         /// <summary>
         /// Returns the version of the DataOwner
         /// </summary>
-        public long Version { get; }
+        public string Version { get; }
 
         /// <summary>
         /// Returns the embedded module definitions

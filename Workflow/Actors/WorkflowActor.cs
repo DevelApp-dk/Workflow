@@ -2,7 +2,9 @@
 using Akka.DI.Core;
 using Akka.Monitoring;
 using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
@@ -24,7 +26,7 @@ namespace DevelApp.Workflow.Actors
         public WorkflowActor(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory)
         {
             //TODO check that sagaStepBehaviorFactory contains behaviors defined in workflowdefinition
-            Workflow = new Model.Workflow(workflowDefinition);
+            Workflow = new Model.Workflow(this, workflowDefinition, sagaStepBehaviorFactory);
             _sagaStepBehaviorFactory = sagaStepBehaviorFactory;
 
             Command<ISagaCRUDMessage>(message =>
@@ -70,11 +72,11 @@ namespace DevelApp.Workflow.Actors
 
         private void ListAllSagasMessageHandler(ListAllSagasMessage message)
         {
-            List<(KeyString, ReadOnlyCollection<VersionNumber>)> sagas = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
+            List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> sagas = new List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)>();
 
             foreach (var sagaPair in _sagas)
             {
-                List<VersionNumber> versions = new List<VersionNumber>();
+                List<SemanticVersionNumber> versions = new List<SemanticVersionNumber>();
                 foreach (var version in sagaPair.Value.Keys)
                 {
                     versions.Add(version);
@@ -133,13 +135,16 @@ namespace DevelApp.Workflow.Actors
         }
 
 
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
@@ -151,14 +156,6 @@ namespace DevelApp.Workflow.Actors
 
         //TODO setup subscription to observable states
         private ISagaStepBehaviorFactory _sagaStepBehaviorFactory;
-
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
 
         /// <summary>
         /// Looks up a possibly dormant saga child.
@@ -200,6 +197,11 @@ namespace DevelApp.Workflow.Actors
         protected override void DoLastActionsAfterRecover()
         {
             Logger.Debug("{0} Finished restoring", ActorId);
+        }
+
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

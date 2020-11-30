@@ -13,14 +13,6 @@ namespace DevelApp.Workflow.Actors
     /// </summary>
     public class JsonSchemaActor : AbstractPersistedWorkflowActor<string>
     {
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
-
         protected override void RecoverPersistedWorkflowDataHandler(string data)
         {
             throw new NotImplementedException();

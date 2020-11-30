@@ -77,7 +77,7 @@ namespace ConsoleTest
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract VersionNumber ActorVersion { get; }
+        protected abstract SemanticVersionNumber ActorVersion { get; }
 
         /// <summary>
         /// Returns the persistant name as default. Override on 

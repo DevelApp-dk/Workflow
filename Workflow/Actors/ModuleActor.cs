@@ -1,7 +1,10 @@
 ﻿using Akka.Actor;
 using Akka.DI.Core;
 using Akka.Monitoring;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
@@ -81,11 +84,11 @@ namespace DevelApp.Workflow.Actors
 
         private void ListAllWorkflowsMessageHandler(ListAllWorkflowsMessage message)
         {
-            List<(KeyString, ReadOnlyCollection<VersionNumber>)> workflows = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
+            List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> workflows = new List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)>();
 
             foreach (var workflowPair in _workflows)
             {
-                List<VersionNumber> versions = new List<VersionNumber>();
+                List<SemanticVersionNumber> versions = new List<SemanticVersionNumber>();
                 foreach (var version in workflowPair.Value.Keys)
                 {
                     versions.Add(version);
@@ -107,8 +110,8 @@ namespace DevelApp.Workflow.Actors
                 case Model.CRUDMessageType.Create:
                     CreateWorkflowMessage createWorkflowMessage = message as CreateWorkflowMessage;
                     string name = createWorkflowMessage.WorkflowDefinition.Name;
-                    int version = (int)createWorkflowMessage.WorkflowDefinition.Version;
-                    string instanceName = BuildInstanceName(name, version);
+                    SemanticVersionNumber version = createWorkflowMessage.WorkflowDefinition.Version;
+                    string instanceName = $"{name}_{version}_1";
                     if (Context.Child(instanceName) == ActorRefs.Nobody)
                     {
                         try
@@ -118,7 +121,7 @@ namespace DevelApp.Workflow.Actors
 
                             var workflowRef = Context.ActorOf(actorProps, instanceName);
 
-                            _workflows.Add(name, new Dictionary<int, IActorRef>() { { version, workflowRef } });
+                            _workflows.Add(name, new Dictionary<SemanticVersionNumber, IActorRef>() { { version, workflowRef } });
 
                             Sender.Tell(new CreateWorkflowSucceededMessage(createWorkflowMessage, workflowRef));
                         }
@@ -145,29 +148,23 @@ namespace DevelApp.Workflow.Actors
             }
         }
 
-
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
 
         #endregion
 
-        private Dictionary<string, Dictionary<int, IActorRef>> _workflows = new Dictionary<string, Dictionary<int, IActorRef>>();
-
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
+        private Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>> _workflows = new Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>>();
 
         /// <summary>
         /// Looks up an active Workflow child. If version is not supplied the highest version is returned
@@ -175,9 +172,9 @@ namespace DevelApp.Workflow.Actors
         /// <param name="workflowKey"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        private IActorRef LookupWorkflow(KeyString workflowKey, VersionNumber version = null)
+        private IActorRef LookupWorkflow(KeyString workflowKey, SemanticVersionNumber version = null)
         {
-            if (_workflows.TryGetValue(workflowKey, out Dictionary<int, IActorRef> versions))
+            if (_workflows.TryGetValue(workflowKey, out Dictionary<SemanticVersionNumber, IActorRef> versions))
             {
                 if (version == null && versions != null)
                 {
@@ -216,6 +213,11 @@ namespace DevelApp.Workflow.Actors
         protected override void DoLastActionsAfterRecover()
         {
             Logger.Debug("{0} Finished restoring", ActorId);
+        }
+
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Akka.Actor;
 using Akka.DI.Core;
 using Akka.Monitoring;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
@@ -124,11 +127,11 @@ namespace DevelApp.Workflow.Actors
 
         private void ListAllDataOwnersMessageHandler(ListAllDataOwnersMessage message)
         {
-            List<(KeyString, ReadOnlyCollection<VersionNumber>)> dataOwners = new List<(KeyString, ReadOnlyCollection<VersionNumber>)>();
+            List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> dataOwners = new List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)>();
 
             foreach(var dataOwnerPair in _dataOwners)
             {
-                List<VersionNumber> versions = new List<VersionNumber>();
+                List<SemanticVersionNumber> versions = new List<SemanticVersionNumber>();
                 foreach(var version in dataOwnerPair.Value.Keys)
                 {
                     versions.Add(version);
@@ -150,8 +153,8 @@ namespace DevelApp.Workflow.Actors
                 case Model.CRUDMessageType.Create:
                     CreateDataOwnerMessage createDataOwnerMessage = message as CreateDataOwnerMessage;
                     string name = createDataOwnerMessage.DataOwnerDefinition.Name;
-                    int version = (int)createDataOwnerMessage.DataOwnerDefinition.Version;
-                    string instanceName = BuildInstanceName(name, version);
+                    SemanticVersionNumber version = createDataOwnerMessage.DataOwnerDefinition.Version;
+                    string instanceName = $"{name}_{version}_1";//Instance number hardcoded
                     if (Context.Child(instanceName) == ActorRefs.Nobody)
                     {
                         try
@@ -161,7 +164,7 @@ namespace DevelApp.Workflow.Actors
 
                             var dataOwnerRef = Context.ActorOf(actorProps, instanceName);
 
-                            _dataOwners.Add(name, new Dictionary<int, IActorRef>() { {version, dataOwnerRef } });
+                            _dataOwners.Add(name, new Dictionary<SemanticVersionNumber, IActorRef>() { {version, dataOwnerRef } });
 
                             foreach (ModuleDefinition moduleDefinition in createDataOwnerMessage.DataOwnerDefinition.ModuleDefinitions)
                             {
@@ -193,28 +196,23 @@ namespace DevelApp.Workflow.Actors
         }
 
 
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
 
         #endregion
 
-        private Dictionary<string, Dictionary<int, IActorRef>> _dataOwners = new Dictionary<string, Dictionary<int, IActorRef>>();
-
-        protected override VersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
+        private Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>> _dataOwners = new Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>>();
 
         /// <summary>
         /// Looks up an acrive DataOwner child. If version is not supplied the highest version is returned
@@ -222,9 +220,9 @@ namespace DevelApp.Workflow.Actors
         /// <param name="dataOwnerKey"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        private IActorRef LookupDataOwner(KeyString dataOwnerKey, VersionNumber version = null)
+        private IActorRef LookupDataOwner(KeyString dataOwnerKey, SemanticVersionNumber version = null)
         {
-            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<int, IActorRef> versions))
+            if (_dataOwners.TryGetValue(dataOwnerKey, out Dictionary<SemanticVersionNumber, IActorRef> versions))
             {
                 if (version == null && versions != null)
                 {

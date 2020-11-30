@@ -41,11 +41,11 @@ namespace DevelApp.Workflow.Actors
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        private VersionNumber ActorVersion
+        private SemanticVersionNumber ActorVersion
         {
             get
             {
-                return 1;
+                return 1; here get file version
             }
         }
 

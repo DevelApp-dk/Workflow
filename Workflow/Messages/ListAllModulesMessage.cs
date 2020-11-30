@@ -9,11 +9,11 @@ namespace DevelApp.Workflow.Messages
 
     public class ListAllModulesSucceededMessage
     {
-        public ListAllModulesSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> modules)
+        public ListAllModulesSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> modules)
         {
             Modules = modules;
         }
 
-        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<VersionNumber>)> Modules { get; }
+        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> Modules { get; }
     }
 }
