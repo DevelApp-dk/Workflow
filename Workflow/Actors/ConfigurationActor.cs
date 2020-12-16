@@ -14,38 +14,38 @@ using System.Text;
 
 namespace DevelApp.Workflow.Actors
 {
-    /// <summary>
-    /// Holds a lookup for configuration
-    /// </summary>
-    public class ConfigurationActor : AbstractPersistedWorkflowActor<IWorkflowMessage, Dictionary<string, Configuration>>
-    {
-        protected override void DoLastActionsAfterRecover()
-        {
-            //No need to do anything
-        }
+    ///// <summary>
+    ///// Holds a lookup for configuration
+    ///// </summary>
+    //public class ConfigurationActor : AbstractPersistedWorkflowActor<IWorkflowMessage, Dictionary<string, Configuration>>
+    //{
+    //    protected override void DoLastActionsAfterRecover()
+    //    {
+    //        //No need to do anything
+    //    }
 
-        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
-        {
-            throw new NotImplementedException();
-        }
+    //    protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
-        {
-            throw new NotImplementedException();
-        }
+    //    protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        protected override void WorkflowMessageHandler(IWorkflowMessage message)
-        {
-            switch (message.MessageTypeName)
-            {
-                default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
-                    if (!Sender.IsNobody() && !message.IsReply)
-                    {
-                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
-                    }
-                    break;
-            }
-        }
-    }
+    //    protected override void WorkflowMessageHandler(IWorkflowMessage message)
+    //    {
+    //        switch (message.MessageTypeName)
+    //        {
+    //            default:
+    //                Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+    //                if (!Sender.IsNobody() && !message.IsReply)
+    //                {
+    //                    Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+    //                }
+    //                break;
+    //        }
+    //    }
+    //}
 }

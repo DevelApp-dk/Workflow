@@ -1,6 +1,7 @@
 ﻿using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;

@@ -1,7 +1,10 @@
 ﻿using Akka.Actor;
 using Akka.DI.Core;
 using Akka.Monitoring;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
@@ -174,7 +177,7 @@ namespace DevelApp.Workflow.Actors
         }
 
 
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
             switch (message.MessageTypeName)
             {
@@ -189,13 +192,6 @@ namespace DevelApp.Workflow.Actors
 
         private Dictionary<string, Dictionary<int, IActorRef>> _modules = new Dictionary<string, Dictionary<int, IActorRef>>();
 
-        protected override SemanticVersionNumber ActorVersion
-        {
-            get
-            {
-                return 1;
-            }
-        }
         
         /// <summary>
         /// Looks up an active Module child. If version is not supplied the highest version is returned
@@ -244,6 +240,11 @@ namespace DevelApp.Workflow.Actors
         protected override void DoLastActionsAfterRecover()
         {
             Logger.Debug("{0} Finished restoring", ActorId);
+        }
+
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }

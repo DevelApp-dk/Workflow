@@ -262,5 +262,10 @@ namespace DevelApp.Workflow.Actors
         {
             Logger.Debug("{0} Finished restoring", ActorId);
         }
+
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
