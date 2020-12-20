@@ -31,12 +31,13 @@ namespace ModelBuilder
 
         private static void LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(string pathString)
         {
+            CodeGenerator codeGenerator = new CodeGenerator(pathString);
             foreach (Type codeDefinedType in GetInterfaceTypes(typeof(IJsonSchemaDefinition)))
             {
                 IJsonSchemaDefinition jsonSchema = GetJsonSchemaInstance(codeDefinedType);
-                CodeGenerator codeGenerator = new CodeGenerator(pathString);
-                codeGenerator.Generate(Code.CSharp, jsonSchema);
+                codeGenerator.Register(jsonSchema);
             }
+            codeGenerator.Generate(Code.CSharp);
         }
 
         private static void LoadAllJsonSchemaBuildersAndWriteSchemasToFile(string pathString)
