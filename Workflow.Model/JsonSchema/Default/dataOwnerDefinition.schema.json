@@ -1,0 +1,55 @@
+{
+	"title" : "DataOwnerDefinition",
+	"description" : "The easy definition of the schema of a dataOwner",
+	"$comment" : "Generated with JsonSchemaBuilder",
+	"examples" : [],
+	"enum" : [],
+	"type" : "object",
+	"additionalProperties" : false,
+	"properties" : {
+			"name" : {
+					"title" : "Name",
+					"description" : "Returns the DataOwner unique name",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null,
+					"maxLength" : 100
+				},
+			"version" : {
+					"title" : "Version",
+					"description" : "Returns the version of the DataOwner",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				},
+			"moduleDefinitions" : {
+					"title" : "ModuleDefinitions",
+					"description" : "Returns the embedded module definitions",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "array",
+					"items" : {
+							"title" : "ModuleDefinition",
+							"description" : "Definition of an module",
+							"$comment" : "Generated with JsonSchemaBuilder",
+							"examples" : [],
+							"enum" : [],
+							"type" : "string",
+							"format" : "iri-reference",
+							"$ref" : "./ModuleDefinition.schema.json"
+						}
+				}
+		},
+	"required" : [
+			"name",
+			"version",
+			"moduleDefinitions"
+		],
+	"$id" : "DataOwnerDefinition",
+	"$schema" : "http://json-schema.org/draft-07/schema#"
+}

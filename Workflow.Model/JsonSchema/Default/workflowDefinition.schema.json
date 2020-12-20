@@ -1,0 +1,176 @@
+{
+	"title" : "WorkflowDefinition",
+	"description" : "The easy definition of the schema of a workflow",
+	"$comment" : "Generated with JsonSchemaBuilder",
+	"examples" : [],
+	"enum" : [],
+	"type" : "object",
+	"additionalProperties" : false,
+	"properties" : {
+			"name" : {
+					"title" : "Name",
+					"description" : "The version number of the workflow",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null,
+					"maxLength" : 100
+				},
+			"version" : {
+					"title" : "Version",
+					"description" : "The version number of the workflow",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				},
+			"nodes" : {
+					"title" : "Nodes",
+					"description" : "Nodes of the workflow",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "array",
+					"items" : {
+							"title" : "Node",
+							"description" : "Definition of an node",
+							"$comment" : "Generated with JsonSchemaBuilder",
+							"examples" : [],
+							"enum" : [],
+							"type" : "object",
+							"additionalProperties" : false,
+							"properties" : {
+									"nodeKey" : {
+											"title" : "NodeKey",
+											"description" : "NodeKey of the node",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										},
+									"description" : {
+											"title" : "Description",
+											"description" : "Description of the node to make it more readable and understandable",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null
+										},
+									"behaviorKey" : {
+											"title" : "BehaviorKey",
+											"description" : "Key of the behavior to use for lookup",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										},
+									"behaviorVersion" : {
+											"title" : "BehaviorVersion",
+											"description" : "Version of the behavior",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null
+										},
+									"behaviorConfiguration" : {
+											"title" : "BehaviorConfiguration",
+											"description" : "Configuration of the instance of behavior",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null
+										},
+									"dataJsonSchemaModuleKey" : {
+											"title" : "DataJsonSchemaModuleKey",
+											"description" : "ModuleKey for looking up jsonschema for data",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										},
+									"dataJsonSchemaKey" : {
+											"title" : "DataJsonSchemaKey",
+											"description" : "Key for looking up jsonschema for data",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										}
+								}
+						}
+				},
+			"edges" : {
+					"title" : "Edges",
+					"description" : "Edges of the workflow",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "array",
+					"items" : {
+							"title" : "Edge",
+							"description" : "Definition of an edge",
+							"$comment" : "Generated with JsonSchemaBuilder",
+							"examples" : [],
+							"enum" : [],
+							"type" : "object",
+							"additionalProperties" : false,
+							"properties" : {
+									"description" : {
+											"title" : "Description",
+											"description" : "Description of the edge",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null
+										},
+									"fromNodeKey" : {
+											"title" : "FromNodeKey",
+											"description" : "The nodekey of the node that the edge comes from",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										},
+									"toNodeKey" : {
+											"title" : "ToNodeKey",
+											"description" : "The nodekey of the node that the edge goes to",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										}
+								},
+							"required" : [
+									"fromNodeKey",
+									"toNodeKey"
+								]
+						}
+				}
+		},
+	"required" : [
+			"name",
+			"version",
+			"nodes",
+			"edges"
+		],
+	"$id" : "WorkflowDefinition",
+	"$schema" : "http://json-schema.org/draft-07/schema#"
+}

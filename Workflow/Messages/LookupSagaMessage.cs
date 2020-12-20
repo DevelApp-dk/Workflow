@@ -29,13 +29,13 @@ namespace DevelApp.Workflow.Messages
     {
         public LookupSagaFailedMessage(LookupSagaMessage lookupSagaMessage)
         {
-            DataOwnerKey = (string)lookupSagaMessage.DataOwnerKey;
-            DataOwnerVersion = (int)lookupSagaMessage.DataOwnerVersion;
-            ModuleKey = (string)lookupSagaMessage.ModuleKey;
-            ModuleVersion = (int)lookupSagaMessage.ModuleVersion;
-            WorkflowKey = (string)lookupSagaMessage.WorkflowKey;
-            WorkflowVersion = (int)lookupSagaMessage.WorkflowVersion;
-            SagaKey = (string)lookupSagaMessage.SagaKey;
+            DataOwnerKey = lookupSagaMessage.DataOwnerKey.Clone();
+            DataOwnerVersion = lookupSagaMessage.DataOwnerVersion.Clone();
+            ModuleKey = lookupSagaMessage.ModuleKey.Clone();
+            ModuleVersion = lookupSagaMessage.ModuleVersion.Clone();
+            WorkflowKey = lookupSagaMessage.WorkflowKey.Clone();
+            WorkflowVersion = lookupSagaMessage.WorkflowVersion.Clone();
+            SagaKey = lookupSagaMessage.SagaKey.Clone();
         }
 
         public KeyString DataOwnerKey { get; }
@@ -51,13 +51,13 @@ namespace DevelApp.Workflow.Messages
     {
         public LookupSagaSucceededMessage(LookupSagaMessage lookupSagaMessage, IActorRef sagaActorRef)
         {
-            DataOwnerKey = (string)lookupSagaMessage.DataOwnerKey;
-            DataOwnerVersion = (int)lookupSagaMessage.DataOwnerVersion;
-            ModuleKey = (string)lookupSagaMessage.ModuleKey;
-            ModuleVersion = (int)lookupSagaMessage.ModuleVersion;
-            WorkflowKey = (string)lookupSagaMessage.WorkflowKey;
-            WorkflowVersion = (int)lookupSagaMessage.WorkflowVersion;
-            SagaKey = (string)lookupSagaMessage.SagaKey;
+            DataOwnerKey = lookupSagaMessage.DataOwnerKey.Clone();
+            DataOwnerVersion = lookupSagaMessage.DataOwnerVersion.Clone();
+            ModuleKey = lookupSagaMessage.ModuleKey.Clone();
+            ModuleVersion = lookupSagaMessage.ModuleVersion.Clone();
+            WorkflowKey = lookupSagaMessage.WorkflowKey.Clone();
+            WorkflowVersion = lookupSagaMessage.WorkflowVersion.Clone();
+            SagaKey = (string)lookupSagaMessage.SagaKey.Clone();
             SagaActorRef = sagaActorRef;
         }
 

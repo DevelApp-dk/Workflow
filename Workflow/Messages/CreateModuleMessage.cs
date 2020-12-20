@@ -55,8 +55,8 @@ namespace DevelApp.Workflow.Messages
 
         public CreateModuleFailedMessage(CreateModuleMessage createModuleMessage, Exception ex, string errorMessage)
         {
-            ModuleKey = (string)createModuleMessage.ModuleKey;
-            ModuleVersion = (int)createModuleMessage.ModuleVersion;
+            ModuleKey = createModuleMessage.ModuleKey.Clone();
+            ModuleVersion = createModuleMessage.ModuleVersion.Clone();
             ErrorMessage = errorMessage;
             Exception = ex;
         }
@@ -71,8 +71,8 @@ namespace DevelApp.Workflow.Messages
     {
         public CreateModuleSucceededMessage(CreateModuleMessage createModuleMessage, IActorRef moduleActorRef)
         {
-            ModuleKey = (string)createModuleMessage.ModuleKey;
-            ModuleVersion = (int)createModuleMessage.ModuleVersion;
+            ModuleKey = createModuleMessage.ModuleKey.Clone();
+            ModuleVersion = createModuleMessage.ModuleVersion.Clone();
             ModuleActorRef = moduleActorRef;
         }
 

@@ -56,8 +56,8 @@ namespace DevelApp.Workflow.Messages
 
         public CreateDataOwnerFailedMessage(CreateDataOwnerMessage createDataOwnerMessage, Exception ex, string errorMessage)
         {
-            DataOwnerKey = (string)createDataOwnerMessage.DataOwnerKey;
-            DataOwnerVersion = (int)createDataOwnerMessage.DataOwnerVersion;
+            DataOwnerKey = createDataOwnerMessage.DataOwnerKey.Clone();
+            DataOwnerVersion = createDataOwnerMessage.DataOwnerVersion.Clone();
             ErrorMessage = errorMessage;
             Exception = ex;
         }
@@ -72,8 +72,8 @@ namespace DevelApp.Workflow.Messages
     {
         public CreateDataOwnerSucceededMessage(CreateDataOwnerMessage createDataOwnerMessage, IActorRef dataOwnerActorRef)
         {
-            DataOwnerKey = (string)createDataOwnerMessage.DataOwnerKey;
-            DataOwnerVersion = (int)createDataOwnerMessage.DataOwnerVersion;
+            DataOwnerKey = createDataOwnerMessage.DataOwnerKey.Clone();
+            DataOwnerVersion = createDataOwnerMessage.DataOwnerVersion.Clone();
             DataOwnerActorRef = dataOwnerActorRef;
         }
 

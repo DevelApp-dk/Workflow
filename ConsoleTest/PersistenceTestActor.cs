@@ -1,4 +1,5 @@
-﻿using DevelApp.Workflow.Actors;
+﻿using DevelApp.Utility.Model;
+using DevelApp.Workflow.Actors;
 using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
@@ -20,7 +21,7 @@ namespace ConsoleTest
         {
             get
             {
-                return 1;
+                return "1.2.1";
             }
         }
 

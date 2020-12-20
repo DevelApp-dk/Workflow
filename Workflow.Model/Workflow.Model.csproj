@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DevelApp.Workflow.Model</AssemblyName>
+    <RootNamespace>DevelApp.Workflow.Model</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevelApp.JsonSchemaBuilder" Version="1.0.16" />
+  </ItemGroup>
+
+</Project>

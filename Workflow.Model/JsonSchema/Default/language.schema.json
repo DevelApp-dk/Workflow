@@ -1,0 +1,34 @@
+{
+	"title" : "Language",
+	"description" : "The definition of a language",
+	"$comment" : "Generated with JsonSchemaBuilder",
+	"examples" : [],
+	"enum" : [],
+	"type" : "object",
+	"additionalProperties" : false,
+	"properties" : {
+			"key" : {
+					"title" : "Key",
+					"description" : "Lookup key for language",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				},
+			"language" : {
+					"title" : "Language",
+					"description" : "Returns the language",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				}
+		},
+	"required" : [
+			"key"
+		],
+	"$id" : "Language",
+	"$schema" : "http://json-schema.org/draft-07/schema#"
+}

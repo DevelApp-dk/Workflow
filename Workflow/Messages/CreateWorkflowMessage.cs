@@ -56,8 +56,8 @@ namespace DevelApp.Workflow.Messages
 
         public CreateWorkflowFailedMessage(CreateWorkflowMessage createWorkflowMessage, Exception ex, string errorMessage)
         {
-            WorkflowKey = (string)createWorkflowMessage.WorkflowKey;
-            WorkflowVersion = (int)createWorkflowMessage.WorkflowVersion;
+            WorkflowKey = createWorkflowMessage.WorkflowKey.Clone();
+            WorkflowVersion = createWorkflowMessage.WorkflowVersion.Clone();
             ErrorMessage = errorMessage;
             Exception = ex;
         }
@@ -72,8 +72,8 @@ namespace DevelApp.Workflow.Messages
     {
         public CreateWorkflowSucceededMessage(CreateWorkflowMessage createWorkflowMessage, IActorRef workflowActorRef)
         {
-            WorkflowKey = (string)createWorkflowMessage.WorkflowKey;
-            WorkflowVersion = (int)createWorkflowMessage.WorkflowVersion;
+            WorkflowKey = createWorkflowMessage.WorkflowKey.Clone();
+            WorkflowVersion = createWorkflowMessage.WorkflowVersion.Clone();
             WorkflowActorRef = workflowActorRef;
         }
 
