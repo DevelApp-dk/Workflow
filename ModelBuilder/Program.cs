@@ -18,20 +18,20 @@ namespace ModelBuilder
 
             string jsonSchemaString = prePath + "Workflow.Model" + Path.DirectorySeparatorChar + "JsonSchema" + Path.DirectorySeparatorChar + "";
             string assemblyPath = dummyClass.GetType().Assembly.Location;
-            string jsonSchemaStringExpanded = Path.GetFullPath(jsonSchemaString, assemblyPath);
-            LoadAllJsonSchemaBuildersAndWriteSchemasToFile(jsonSchemaStringExpanded);
+            string jsonSchemaApplicationRoot = Path.GetFullPath(jsonSchemaString, assemblyPath);
+            LoadAllJsonSchemaBuildersAndWriteSchemasToFile(jsonSchemaApplicationRoot);
 
             string csharpModelString = prePath + "Workflow" + Path.DirectorySeparatorChar + "GeneratedModel" + Path.DirectorySeparatorChar + "";
-            string csharpModelStringExpanded = Path.GetFullPath(csharpModelString, assemblyPath);
-            LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(csharpModelStringExpanded);
+            string applicationRoot = Path.GetFullPath(csharpModelString, assemblyPath);
+            LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(applicationRoot, jsonSchemaApplicationRoot);
 
         }
 
         #region Assembly load all schemas and write
 
-        private static void LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(string pathString)
+        private static void LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(string applicationRoot, string jsonSchemaApplicationRoot)
         {
-            CodeGenerator codeGenerator = new CodeGenerator(pathString);
+            CodeGenerator codeGenerator = new CodeGenerator(applicationRoot, jsonSchemaApplicationRoot);
             foreach (Type codeDefinedType in GetInterfaceTypes(typeof(IJsonSchemaDefinition)))
             {
                 IJsonSchemaDefinition jsonSchema = GetJsonSchemaInstance(codeDefinedType);

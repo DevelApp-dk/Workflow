@@ -135,8 +135,8 @@ namespace DevelApp.Workflow.Actors
                 case Model.CRUDMessageType.Create:
                     CreateModuleMessage createModuleMessage = message as CreateModuleMessage;
                     string name = createModuleMessage.ModuleDefinition.Name;
-                    int version = (int)createModuleMessage.ModuleDefinition.Version;
-                    string instanceName = BuildInstanceName(name, version);
+                    SemanticVersionNumber version = createModuleMessage.ModuleDefinition.Version;
+                    string instanceName = name + "." + version.ToString();
                     if (Context.Child(instanceName) == ActorRefs.Nobody)
                     {
                         try
@@ -145,7 +145,7 @@ namespace DevelApp.Workflow.Actors
 
                             var moduleRef = Context.ActorOf(actorProps, instanceName);
 
-                            _modules.Add(name, new Dictionary<int, IActorRef>() { { version, moduleRef } });
+                            _modules.Add(name, new Dictionary<SemanticVersionNumber, IActorRef>() { { version, moduleRef } });
 
                             foreach (WorkflowDefinition workflowDefinition in createModuleMessage.ModuleDefinition.WorkflowDefinitions)
                             {
@@ -182,15 +182,18 @@ namespace DevelApp.Workflow.Actors
             switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
 
         #endregion
 
-        private Dictionary<string, Dictionary<int, IActorRef>> _modules = new Dictionary<string, Dictionary<int, IActorRef>>();
+        private Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>> _modules = new Dictionary<string, Dictionary<SemanticVersionNumber, IActorRef>>();
 
         
         /// <summary>
@@ -201,7 +204,7 @@ namespace DevelApp.Workflow.Actors
         /// <returns></returns>
         private IActorRef LookupModule(KeyString moduleKey, SemanticVersionNumber version = null)
         {
-            if (_modules.TryGetValue(moduleKey, out Dictionary<int, IActorRef> versions))
+            if (_modules.TryGetValue(moduleKey, out Dictionary<SemanticVersionNumber, IActorRef> versions))
             {
                 if (version == null && versions != null)
                 {
