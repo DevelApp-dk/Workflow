@@ -7,16 +7,16 @@ using System.Text;
 
 namespace DevelApp.Workflow.Model.SchemaBuilder
 {
-    public class TranslationJsonSchema : AbstractJsonSchema
+    public class TranslationDefinitionJsonSchema : AbstractJsonSchema
     {
         protected override JSBSchema BuildJsonSchema()
         {
             List<IJSBPart> tProps = new List<IJSBPart>();
             tProps.Add(new JSBString("Key", "Lookup key for translation", isRequired: true));
             tProps.Add(new JSBString("Translation", "Returns the translation"));
-            JSBObject objectPart = new JSBObject("Translation", Description, props: tProps);
+            JSBObject objectPart = new JSBObject("TranslationDefinition", Description, props: tProps);
 
-            return new JSBSchema("Translation", Description, topPart: objectPart);
+            return new JSBSchema("TranslationDefinition", Description, topPart: objectPart);
         }
 
         public override string Description

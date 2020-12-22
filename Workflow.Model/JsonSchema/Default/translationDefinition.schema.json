@@ -1,5 +1,5 @@
 {
-	"title" : "Translation",
+	"title" : "TranslationDefinition",
 	"description" : "The definition of a translation",
 	"$comment" : "Generated with JsonSchemaBuilder",
 	"examples" : [],
@@ -29,6 +29,6 @@
 	"required" : [
 			"key"
 		],
-	"$id" : "Translation",
+	"$id" : "TranslationDefinition",
 	"$schema" : "http://json-schema.org/draft-07/schema#"
 }

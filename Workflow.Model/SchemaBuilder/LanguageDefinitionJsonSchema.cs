@@ -7,23 +7,23 @@ using System.Text;
 
 namespace DevelApp.Workflow.Model.SchemaBuilder
 {
-    public class ConfigurationJsonSchema : AbstractJsonSchema
+    public class LanguageDefinitionJsonSchema : AbstractJsonSchema
     {
         protected override JSBSchema BuildJsonSchema()
         {
             List<IJSBPart> tProps = new List<IJSBPart>();
-            tProps.Add(new JSBString("Key", "Lookup key for configuration", isRequired: true));
-            tProps.Add(new JSBString("Configuration", "Returns the configuration"));
-            JSBObject objectPart = new JSBObject("Configuration", Description, props: tProps);
+            tProps.Add(new JSBString("Key", "Lookup key for language", isRequired: true));
+            tProps.Add(new JSBString("Language", "Returns the language"));
+            JSBObject objectPart = new JSBObject("LanguageDefinition", Description, props: tProps);
 
-            return new JSBSchema("Configuration", Description, topPart: objectPart);
+            return new JSBSchema("LanguageDefinition", Description, topPart: objectPart);
         }
 
         public override string Description
         {
             get
             {
-                return "The definition of a configuration";
+                return "The definition of a language";
             }
         }
 

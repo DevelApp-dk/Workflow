@@ -1,6 +1,6 @@
 {
-	"title" : "Configuration",
-	"description" : "The definition of a configuration",
+	"title" : "LanguageDefinition",
+	"description" : "The definition of a language",
 	"$comment" : "Generated with JsonSchemaBuilder",
 	"examples" : [],
 	"enum" : [],
@@ -9,16 +9,16 @@
 	"properties" : {
 			"key" : {
 					"title" : "Key",
-					"description" : "Lookup key for configuration",
+					"description" : "Lookup key for language",
 					"$comment" : "Generated with JsonSchemaBuilder",
 					"examples" : [],
 					"enum" : [],
 					"type" : "string",
 					"format" : null
 				},
-			"configuration" : {
-					"title" : "Configuration",
-					"description" : "Returns the configuration",
+			"language" : {
+					"title" : "Language",
+					"description" : "Returns the language",
 					"$comment" : "Generated with JsonSchemaBuilder",
 					"examples" : [],
 					"enum" : [],
@@ -29,6 +29,6 @@
 	"required" : [
 			"key"
 		],
-	"$id" : "Configuration",
+	"$id" : "LanguageDefinition",
 	"$schema" : "http://json-schema.org/draft-07/schema#"
 }

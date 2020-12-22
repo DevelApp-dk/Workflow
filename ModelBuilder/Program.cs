@@ -24,28 +24,35 @@ namespace ModelBuilder
             string csharpModelString = prePath + "Workflow" + Path.DirectorySeparatorChar + "GeneratedModel" + Path.DirectorySeparatorChar + "";
             string applicationRoot = Path.GetFullPath(csharpModelString, assemblyPath);
             LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(applicationRoot, jsonSchemaApplicationRoot);
-
         }
 
         #region Assembly load all schemas and write
 
         private static void LoadAllJsonSchemaBuildersAndGenerateCSharpCodeToFile(string applicationRoot, string jsonSchemaApplicationRoot)
         {
+            if (Directory.Exists(applicationRoot))
+            {
+                Directory.Delete(applicationRoot, true);
+            }
             CodeGenerator codeGenerator = new CodeGenerator(applicationRoot, jsonSchemaApplicationRoot);
             foreach (Type codeDefinedType in GetInterfaceTypes(typeof(IJsonSchemaDefinition)))
             {
                 IJsonSchemaDefinition jsonSchema = GetJsonSchemaInstance(codeDefinedType);
                 codeGenerator.Register(jsonSchema);
             }
-            codeGenerator.Generate(Code.CSharp);
+            codeGenerator.GenerateToFile(Code.CSharp);
         }
 
-        private static void LoadAllJsonSchemaBuildersAndWriteSchemasToFile(string pathString)
+        private static void LoadAllJsonSchemaBuildersAndWriteSchemasToFile(string jsonSchemaApplicationRoot)
         {
+            if (Directory.Exists(jsonSchemaApplicationRoot))
+            {
+                Directory.Delete(jsonSchemaApplicationRoot, true);
+            }
             foreach (Type codeDefinedType in GetInterfaceTypes(typeof(IJsonSchemaDefinition)))
             {
                 IJsonSchemaDefinition jsonSchema = GetJsonSchemaInstance(codeDefinedType);
-                jsonSchema.WriteSchemaToFile(pathString);
+                jsonSchema.WriteSchemaToFile(jsonSchemaApplicationRoot);
             }
         }
 
