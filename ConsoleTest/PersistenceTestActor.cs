@@ -1,4 +1,6 @@
-﻿using DevelApp.Workflow.Actors;
+﻿using DevelApp.Utility.Model;
+using DevelApp.Workflow.Actors;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
@@ -15,11 +17,11 @@ namespace ConsoleTest
         { 
         }
 
-        protected override VersionNumber ActorVersion
+        protected override SemanticVersionNumber ActorVersion
         {
             get
             {
-                return 1;
+                return "1.2.1";
             }
         }
 
@@ -27,12 +29,6 @@ namespace ConsoleTest
         {
             recovercalls += 1;
             Logger.Debug($"Recover {recovercalls} times called with [{data}]");
-        }
-
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
-        {
-            Logger.Debug($"Message {message.MessageTypeName} received");
-            PersistWorkflowData(message.MessageTypeName);
         }
 
         protected override void PreStart()
@@ -45,6 +41,12 @@ namespace ConsoleTest
         {
             Logger.Debug($"{ActorId} is stopping");
             base.PostStop();
+        }
+
+        protected override void WorkflowMessageHandler(WorkflowMessage message)
+        {
+            Logger.Debug($"Message {message.MessageTypeName} received");
+            PersistWorkflowData(message.MessageTypeName);
         }
     }
 }

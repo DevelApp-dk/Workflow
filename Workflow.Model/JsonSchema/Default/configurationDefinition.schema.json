@@ -1,0 +1,34 @@
+{
+	"title" : "ConfigurationDefinition",
+	"description" : "The definition of a configuration",
+	"$comment" : "Generated with JsonSchemaBuilder",
+	"examples" : [],
+	"enum" : [],
+	"type" : "object",
+	"additionalProperties" : false,
+	"properties" : {
+			"key" : {
+					"title" : "Key",
+					"description" : "Lookup key for configuration",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				},
+			"configuration" : {
+					"title" : "Configuration",
+					"description" : "Returns the configuration",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				}
+		},
+	"required" : [
+			"key"
+		],
+	"$id" : "ConfigurationDefinition",
+	"$schema" : "http://json-schema.org/draft-07/schema#"
+}

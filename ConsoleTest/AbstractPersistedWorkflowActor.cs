@@ -1,6 +1,8 @@
 ﻿using Akka.Event;
 using Akka.Monitoring;
 using Akka.Persistence;
+using DevelApp.Utility.Model;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
 using DevelApp.Workflow.Messages;
 using Manatee.Json;
@@ -77,7 +79,7 @@ namespace ConsoleTest
         /// <summary>
         /// Returns the actor version in positive number
         /// </summary>
-        protected abstract VersionNumber ActorVersion { get; }
+        protected abstract SemanticVersionNumber ActorVersion { get; }
 
         /// <summary>
         /// Returns the persistant name as default. Override on 

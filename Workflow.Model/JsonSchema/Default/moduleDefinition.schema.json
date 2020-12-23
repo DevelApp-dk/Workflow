@@ -1,0 +1,55 @@
+{
+	"title" : "ModuleDefinition",
+	"description" : "The easy definition of the schema of a module",
+	"$comment" : "Generated with JsonSchemaBuilder",
+	"examples" : [],
+	"enum" : [],
+	"type" : "object",
+	"additionalProperties" : false,
+	"properties" : {
+			"name" : {
+					"title" : "Name",
+					"description" : "Returns the Module unique name",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null,
+					"maxLength" : 100
+				},
+			"version" : {
+					"title" : "Version",
+					"description" : "Returns the version of the Module",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "string",
+					"format" : null
+				},
+			"workflowDefinitions" : {
+					"title" : "WorkflowDefinitions",
+					"description" : "Returns the embedded workflow definitions",
+					"$comment" : "Generated with JsonSchemaBuilder",
+					"examples" : [],
+					"enum" : [],
+					"type" : "array",
+					"items" : {
+							"title" : "WorkflowDefinition",
+							"description" : "Definition of an workflow",
+							"$comment" : "Generated with JsonSchemaBuilder",
+							"examples" : [],
+							"enum" : [],
+							"type" : "string",
+							"format" : "iri-reference",
+							"$ref" : "./WorkflowDefinition.schema.json"
+						}
+				}
+		},
+	"required" : [
+			"name",
+			"version",
+			"workflowDefinitions"
+		],
+	"$id" : "ModuleDefinition",
+	"$schema" : "http://json-schema.org/draft-07/schema#"
+}

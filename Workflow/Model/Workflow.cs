@@ -1,6 +1,12 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using Default;
+using DevelApp.Utility.Model;
+using DevelApp.Workflow.Actors;
+using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.Exceptions;
+using DevelApp.Workflow.Core.Model;
 using DoubleLinkedDirectedGraph;
 using Manatee.Json;
+using Manatee.Json.Schema;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -11,22 +17,28 @@ namespace DevelApp.Workflow.Model
 {
     public class Workflow
     {
-        private DoubleLinkedDirectedGraph<NodeData, EdgeData> internalWorkflow = new DoubleLinkedDirectedGraph<NodeData, EdgeData>();
+        private DoubleLinkedDirectedGraph<NodeData, EdgeData> _internalWorkflow = new DoubleLinkedDirectedGraph<NodeData, EdgeData>();
+        private ISagaStepBehaviorFactory _sagaStepBehaviorFactory;
 
         /// <summary>
-        /// Builds workflow from workflow template
+        /// Builds workflow and validates from workflow template
         /// </summary>
-        /// <param name="workflow"></param>
-        public Workflow(WorkflowDefinition workflowDefinition)
+        /// <param name="workflowDefinition"></param>
+        /// <param name="sagaStepBehaviorFactory"></param>
+        public Workflow(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory, IJsonSchemaDefinitionFactory jsonSchemaDefinitionFactory)
         {
+            WorkflowDefinition = workflowDefinition;
             Name = workflowDefinition.Name;
-            Version = (int) workflowDefinition.Version;
+            Version = workflowDefinition.Version;
+            _sagaStepBehaviorFactory = sagaStepBehaviorFactory;
 
             //Add all edges starting from "START" with their nodes
-            foreach(WorkflowDefinition.Edge edge in workflowDefinition.Edges.Where(e=>e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)))
+            foreach (WorkflowDefinition.Edge edge in workflowDefinition.Edges.Where(e=>e.FromNodeKey.Equals(DoubleLinkedDirectedGraph<NodeData, EdgeData>.START_NODE_KEY)))
             {
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
-                internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                CheckIfSagaStepBehaviorExists(toNode);
+                JsonSchema dataJsonSchema = jsonSchemaDefinitionFactory.GetJsonSchemaDefinition(toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey, toNode.DataJsonSchemaVersion).JsonSchema;
+                _internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
             }
 
             //Add all remaining edges with their nodes
@@ -34,15 +46,41 @@ namespace DevelApp.Workflow.Model
             while(nonInsertedEdges.Count > 0)
             {
                 //Select first that have an included nodekey to avoid problems
-                WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
+                WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => _internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
-                internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, toNode.BehaviorKey, (int)toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                CheckIfSagaStepBehaviorExists(toNode);
+                JsonSchema dataJsonSchema = jsonSchemaDefinitionFactory.GetJsonSchemaDefinition(toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey, toNode.DataJsonSchemaVersion).JsonSchema;
+                _internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
 
                 nonInsertedEdges.Remove(edge);
             }
 
-            internalWorkflow.FinishGraph();
+            _internalWorkflow.FinishGraph();
         }
+
+        private void CheckIfSagaStepBehaviorExists(WorkflowDefinition.Node toNode)
+        {
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration, Name);
+            if(sagaStepBehavior == null)
+            {
+                throw new WorkflowStartupException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {toNode.BehaviorKey}.{toNode.BehaviorVersion}");
+            }
+        }
+
+        public ISagaStepBehavior GetSagaStepBehaviorForNode(DoubleLinkedDirectedGraph<NodeData, EdgeData>.Node node)
+        {
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(node.NodeData.BehaviorModuleKey, node.NodeData.BehaviorKey, node.NodeData.BehaviorVersion, node.NodeData.BehaviorConfiguration, Name);
+            if (sagaStepBehavior == null)
+            {
+                throw new WorkflowRuntimeException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {node.NodeData.BehaviorKey}.{node.NodeData.BehaviorVersion}");
+            }
+            else
+            {
+                return sagaStepBehavior;
+            }
+        }
+
+        public WorkflowDefinition WorkflowDefinition { get; }
 
         /// <summary>
         /// Name of the Workflow
@@ -52,7 +90,7 @@ namespace DevelApp.Workflow.Model
         /// <summary>
         /// Version number of the workflow
         /// </summary>
-        public VersionNumber Version { get; }
+        public SemanticVersionNumber Version { get; }
 
         /// <summary>
         /// Returns all the start nodes
@@ -61,7 +99,7 @@ namespace DevelApp.Workflow.Model
         {
             get
             {
-                return internalWorkflow.Start;
+                return _internalWorkflow.Start;
             }
         }
 
@@ -72,7 +110,7 @@ namespace DevelApp.Workflow.Model
         {
             get
             {
-                return internalWorkflow.End;
+                return _internalWorkflow.End;
             }
         }
 
@@ -81,18 +119,29 @@ namespace DevelApp.Workflow.Model
         /// </summary>
         public class NodeData
         { 
-            public NodeData(string description, KeyString behaviorKey, VersionNumber behaviorVersion, JsonValue behaviorConfiguration)
+            public NodeData(string description, JsonSchema dataJsonSchema, KeyString behaviorModuleKey, KeyString behaviorKey, SemanticVersionNumber behaviorVersion, JsonValue behaviorConfiguration)
             {
                 Description = description;
                 BehaviorKey = behaviorKey;
                 BehaviorVersion = behaviorVersion;
                 BehaviorConfiguration = behaviorConfiguration;
+                DataJsonSchema = dataJsonSchema;
             }
 
             /// <summary>
             /// Description of the node to make it human readable and understandable
             /// </summary>
             public string Description { get; }
+
+            /// <summary>
+            /// The JsonSchema for the data of the current SagaStep
+            /// </summary>
+            JsonSchema DataJsonSchema { get; }
+
+            /// <summary>
+            /// The module which the behavior belongs to
+            /// </summary>
+            public KeyString BehaviorModuleKey { get; }
 
             /// <summary>
             /// The behavior of the sagaKey
@@ -102,7 +151,7 @@ namespace DevelApp.Workflow.Model
             /// <summary>
             /// The version of the behavior
             /// </summary>
-            public VersionNumber BehaviorVersion { get; }
+            public SemanticVersionNumber BehaviorVersion { get; }
 
             /// <summary>
             /// The configuration of the behavior
