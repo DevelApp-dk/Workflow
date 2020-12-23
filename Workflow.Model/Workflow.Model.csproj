@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DevelApp.Workflow.Model</AssemblyName>
     <RootNamespace>DevelApp.Workflow.Model</RootNamespace>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <Authors>Lars Shakya Buch-Jepsen</Authors>
     <Company>DevelApp Denmark (CVR 33211740)</Company>
     <Description>JsonSchema Model for DevelApp.Workflow</Description>
