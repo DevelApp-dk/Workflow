@@ -4,10 +4,24 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DevelApp.Workflow.Model</AssemblyName>
     <RootNamespace>DevelApp.Workflow.Model</RootNamespace>
+    <Version>1.0.9</Version>
+    <Authors>Lars Shakya Buch-Jepsen</Authors>
+    <Company>DevelApp Denmark (CVR 33211740)</Company>
+    <Description>JsonSchema Model for DevelApp.Workflow</Description>
+    <Copyright>Copyright © DevelApp 2020</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/DevelApp-dk/Workflow</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DevelApp.Workflow.Core" Version="1.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -21,6 +21,11 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Publish Workflow.Model
+      uses: brandedoutcast/publish-nuget@v2.5.2
+      with:
+          PROJECT_FILE_PATH: Workflow/Workflow.Model.csproj
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
     - name: Publish Workflow
       uses: brandedoutcast/publish-nuget@v2.5.2
       with:
