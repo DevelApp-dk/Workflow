@@ -1,0 +1,6 @@
+{
+	"$id" : "NoValidation",
+	"$schema" : "http://json-schema.org/draft-07/schema#",
+	"title" : "NoValidation",
+	"description" : "Represents an empty schema with disabled validation"
+}

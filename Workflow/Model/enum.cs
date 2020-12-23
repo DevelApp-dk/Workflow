@@ -16,4 +16,12 @@ namespace DevelApp.Workflow.Model
         Saga = 7,
         User = 8
     }
+
+    public enum CRUDMessageType
+    {
+        Undefined = 0,
+        Create = 1,
+        Update = 2,
+        Delete = 3
+    }
 }

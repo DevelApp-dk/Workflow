@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Actors;
 
 namespace DevelApp.Workflow.Model
 {
@@ -66,18 +67,6 @@ namespace DevelApp.Workflow.Model
                 return null;
             }
             return sagaStep.DataJsonSchema.ValidateSchema();
-        }
-
-        /// <summary>
-        /// Returns the Saga version
-        /// </summary>
-        /// <returns></returns>
-        public VersionString SagaVersion
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
         }
 
         /// <summary>

@@ -1,68 +1,54 @@
 ﻿using Akka.Actor;
+using Akka.Monitoring;
+using DevelApp.Utility.Model;
 using DevelApp.Workflow.Core;
+using DevelApp.Workflow.Core.AbstractActors;
+using DevelApp.Workflow.Core.Messages;
 using DevelApp.Workflow.Core.Model;
+using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
+using DevelApp.Workflow.Model;
 using Manatee.Json;
 using System;
+using System.Collections.Generic;
 
 namespace DevelApp.Workflow.Actors
 {
     /// <summary>
     /// Represents the individual sagas
     /// </summary>
-    public class SagaActor : AbstractPersistedWorkflowActor<string>
+    public class SagaActor : AbstractPersistedWorkflowActor<IWorkflowMessage, Saga>
     {
-        public Guid SagaId { get; }
         private Model.Workflow _workflow;
-        private ISagaStepBehaviorFactory _behaviorFactory;
 
-        public SagaActor(Model.Workflow workflow, ISagaStepBehaviorFactory behaviorFactory, Guid sagaId = default)
+        public SagaActor(Model.Workflow workflow, KeyString sagaKey)
         {
-            if(sagaId == default)
-            {
-                SagaId = Guid.NewGuid();
-            }
-            else
-            {
-                SagaId = sagaId;
-            }
+            SagaKey = sagaKey;
             _workflow = workflow;
-            _behaviorFactory = behaviorFactory;
         }
 
-        protected override VersionNumber ActorVersion
+        protected Saga Saga { get; }
+
+        public override string ActorId
         {
             get
             {
-                return 1;
+                return SagaKey;
             }
         }
 
-        public override string PersistenceId
-        {
-            get
-            {
-                return SagaId.ToString();
-            }
-        }
+        protected KeyString SagaKey { get; }
 
-        protected override void RecoverPersistedWorkflowDataHandler(string data)
+        protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void RecoverPersistedSnapshotWorkflowDataHandler(string data)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WorkflowMessageHandler(WorkflowMessage message)
-        {
-            switch(message.MessageTypeName)
+            switch (message.MessageTypeName)
             {
                 default:
-                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, message.OriginalSender);
-                    Sender.Tell(new WorkflowUnhandledMessage(message, Self.Path));
+                    Logger.Warning("{0} Did not handle received message [{1}] from [{2}]", ActorId, message.MessageTypeName, Sender.Path);
+                    if (!Sender.IsNobody() && !message.IsReply)
+                    {
+                        Sender.Tell((message as WorkflowMessage).GetWorkflowUnhandledMessage("Message Type Not Implemented", Self.Path));
+                    }
                     break;
             }
         }
@@ -87,6 +73,22 @@ namespace DevelApp.Workflow.Actors
                     //Fallback to Default Stategy if not handled
                     return Akka.Actor.SupervisorStrategy.DefaultStrategy.Decider.Decide(ex);
                 });
+        }
+
+        protected override void DoLastActionsAfterRecover()
+        {
+            //Pickup where last message died
+            throw new NotImplementedException();
+        }
+
+        protected override void RecoverPersistedWorkflowDataHandler(IWorkflowMessage dataItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void GroupFinishedMessageHandler(GroupFinishedMessage message)
+        {
+            throw new NotImplementedException();
         }
     }
 }
