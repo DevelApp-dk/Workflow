@@ -2,6 +2,7 @@
 using Akka.DI.Core;
 using Akka.Monitoring;
 using Default;
+using DevelApp.Utility.Model;
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;

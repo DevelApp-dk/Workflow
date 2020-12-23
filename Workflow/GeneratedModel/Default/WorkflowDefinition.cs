@@ -46,6 +46,13 @@ namespace Default
 
 
             /// <summary>
+            /// BehaviorModuleKey: ModuleKey of the behavior to use for lookup
+            /// </summary>
+            [JsonProperty("behaviorModuleKey")]
+            public string BehaviorModuleKey { get; set; }
+
+
+            /// <summary>
             /// BehaviorKey: Key of the behavior to use for lookup
             /// </summary>
             [JsonProperty("behaviorKey")]
@@ -78,6 +85,13 @@ namespace Default
             /// </summary>
             [JsonProperty("dataJsonSchemaKey")]
             public string DataJsonSchemaKey { get; set; }
+
+
+            /// <summary>
+            /// DataJsonSchemaVersion: Version of the jsonschema for data
+            /// </summary>
+            [JsonProperty("dataJsonSchemaVersion")]
+            public string DataJsonSchemaVersion { get; set; }
 
 
         }

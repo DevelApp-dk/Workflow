@@ -1,9 +1,9 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using DevelApp.Utility.Model;
 using System.Collections.ObjectModel;
 
 namespace DevelApp.Workflow.Messages
 {
-    class ListAllWorkflowsMessage
+    public class ListAllWorkflowsMessage
     {
     }
     public class ListAllWorkflowsSucceededMessage

@@ -1,10 +1,7 @@
 ﻿using DevelApp.JsonSchemaBuilder;
 using DevelApp.JsonSchemaBuilder.JsonSchemaParts;
 using DevelApp.Utility.Model;
-using Manatee.Json.Schema;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.SchemaBuilder
 {
@@ -15,11 +12,13 @@ namespace DevelApp.Workflow.SchemaBuilder
             List<IJSBPart> nProps = new List<IJSBPart>();
             nProps.Add(new JSBString("NodeKey", "NodeKey of the node", maxLength: 100));
             nProps.Add(new JSBString("Description", "Description of the node to make it more readable and understandable"));
+            nProps.Add(new JSBString("BehaviorModuleKey", "ModuleKey of the behavior to use for lookup", maxLength: 100));
             nProps.Add(new JSBString("BehaviorKey", "Key of the behavior to use for lookup", maxLength: 100));
             nProps.Add(new JSBString("BehaviorVersion", "Version of the behavior"));
             nProps.Add(new JSBString("BehaviorConfiguration", "Configuration of the instance of behavior"));
             nProps.Add(new JSBString("DataJsonSchemaModuleKey", "ModuleKey for looking up jsonschema for data", maxLength: 100));
             nProps.Add(new JSBString("DataJsonSchemaKey", "Key for looking up jsonschema for data", maxLength: 100));
+            nProps.Add(new JSBString("DataJsonSchemaVersion", "Version of the jsonschema for data"));
 
             List<IJSBPart> eProps = new List<IJSBPart>();
             eProps.Add(new JSBString("Description", "Description of the edge"));

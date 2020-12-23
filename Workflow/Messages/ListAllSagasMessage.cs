@@ -1,18 +1,19 @@
-﻿using DevelApp.Workflow.Core.Model;
+﻿using Akka.Actor;
+using DevelApp.Utility.Model;
 using System.Collections.ObjectModel;
 
 namespace DevelApp.Workflow.Messages
 {
-    class ListAllSagasMessage
+    public class ListAllSagasMessage
     {
     }
     public class ListAllSagasSucceededMessage
     {
-        public ListAllSagasSucceededMessage(ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> sagas)
+        public ListAllSagasSucceededMessage(ReadOnlyCollection<(KeyString, IActorRef)> sagas)
         {
             Sagas = sagas;
         }
 
-        public ReadOnlyCollection<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> Sagas { get; }
+        public ReadOnlyCollection<(KeyString, IActorRef)> Sagas { get; }
     }
 }

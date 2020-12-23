@@ -1,8 +1,5 @@
 ﻿using Akka.Actor;
-using DevelApp.Workflow.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DevelApp.Utility.Model;
 
 namespace DevelApp.Workflow.Messages
 {

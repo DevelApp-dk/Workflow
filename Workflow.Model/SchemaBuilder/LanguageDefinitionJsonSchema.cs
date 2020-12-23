@@ -1,9 +1,7 @@
 ﻿using DevelApp.JsonSchemaBuilder;
 using DevelApp.JsonSchemaBuilder.JsonSchemaParts;
 using DevelApp.Utility.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DevelApp.Workflow.Model.SchemaBuilder
 {

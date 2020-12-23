@@ -5,7 +5,7 @@ using Ardalis.SmartEnum;
 using System.Collections.Generic;
 using System.Net.Mail;
 
-namespace DevelApp.Module.Default
+namespace Default
 {
     /// <summary>
     /// NoValidation: Represents an empty schema with disabled validation

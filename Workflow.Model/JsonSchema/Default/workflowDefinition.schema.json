@@ -61,6 +61,16 @@
 											"type" : "string",
 											"format" : null
 										},
+									"behaviorModuleKey" : {
+											"title" : "BehaviorModuleKey",
+											"description" : "ModuleKey of the behavior to use for lookup",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null,
+											"maxLength" : 100
+										},
 									"behaviorKey" : {
 											"title" : "BehaviorKey",
 											"description" : "Key of the behavior to use for lookup",
@@ -108,6 +118,15 @@
 											"type" : "string",
 											"format" : null,
 											"maxLength" : 100
+										},
+									"dataJsonSchemaVersion" : {
+											"title" : "DataJsonSchemaVersion",
+											"description" : "Version of the jsonschema for data",
+											"$comment" : "Generated with JsonSchemaBuilder",
+											"examples" : [],
+											"enum" : [],
+											"type" : "string",
+											"format" : null
 										}
 								}
 						}

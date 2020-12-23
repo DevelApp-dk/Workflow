@@ -2,6 +2,7 @@
 using Akka.DI.Core;
 using Akka.Monitoring;
 using Default;
+using DevelApp.Utility.Model;
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.AbstractActors;
 using DevelApp.Workflow.Core.Exceptions;
@@ -11,11 +12,13 @@ using DevelApp.Workflow.Interfaces;
 using DevelApp.Workflow.Messages;
 using DevelApp.Workflow.Model;
 using Manatee.Json;
+using Manatee.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DevelApp.Workflow.Actors
 {
@@ -24,10 +27,10 @@ namespace DevelApp.Workflow.Actors
     /// </summary>
     public class WorkflowActor : AbstractPersistedWorkflowActor<ISagaCRUDMessage, Dictionary<string, ISagaCRUDMessage>>
     {
-        public WorkflowActor(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory)
+        public WorkflowActor(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory, IJsonSchemaDefinitionFactory jsonSchemaDefinitionFactory)
         {
             //TODO check that sagaStepBehaviorFactory contains behaviors defined in workflowdefinition
-            Workflow = new Model.Workflow(this, workflowDefinition, sagaStepBehaviorFactory);
+            Workflow = new Model.Workflow(workflowDefinition, sagaStepBehaviorFactory, jsonSchemaDefinitionFactory);
             _sagaStepBehaviorFactory = sagaStepBehaviorFactory;
 
             Command<ISagaCRUDMessage>(message =>
@@ -73,16 +76,11 @@ namespace DevelApp.Workflow.Actors
 
         private void ListAllSagasMessageHandler(ListAllSagasMessage message)
         {
-            List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)> sagas = new List<(KeyString, ReadOnlyCollection<SemanticVersionNumber>)>();
+            List<(KeyString, IActorRef)> sagas = new List<(KeyString, IActorRef)>();
 
             foreach (var sagaPair in _sagas)
             {
-                List<SemanticVersionNumber> versions = new List<SemanticVersionNumber>();
-                foreach (var version in sagaPair.Value.Keys)
-                {
-                    versions.Add(version);
-                }
-                sagas.Add((sagaPair.Key, versions.AsReadOnly()));
+                sagas.Add((sagaPair.Key, sagaPair.Value));
             }
             Sender.Tell(new ListAllSagasSucceededMessage(sagas.AsReadOnly()));
         }
@@ -134,7 +132,6 @@ namespace DevelApp.Workflow.Actors
                     throw new WorkflowStartupException("CRUD Message Type Not Implemented");
             }
         }
-
 
         protected override void WorkflowMessageHandler(IWorkflowMessage message)
         {

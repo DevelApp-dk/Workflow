@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevelApp.JsonSchemaBuilder" Version="1.0.20" />
+    <PackageReference Include="DevelApp.Workflow.Core" Version="1.1.10" />
   </ItemGroup>
 
 </Project>

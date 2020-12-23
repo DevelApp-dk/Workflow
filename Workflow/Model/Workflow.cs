@@ -1,4 +1,5 @@
 ﻿using Default;
+using DevelApp.Utility.Model;
 using DevelApp.Workflow.Actors;
 using DevelApp.Workflow.Core;
 using DevelApp.Workflow.Core.Exceptions;
@@ -24,7 +25,7 @@ namespace DevelApp.Workflow.Model
         /// </summary>
         /// <param name="workflowDefinition"></param>
         /// <param name="sagaStepBehaviorFactory"></param>
-        public Workflow(WorkflowActor workflowActor, WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory)
+        public Workflow(WorkflowDefinition workflowDefinition, ISagaStepBehaviorFactory sagaStepBehaviorFactory, IJsonSchemaDefinitionFactory jsonSchemaDefinitionFactory)
         {
             WorkflowDefinition = workflowDefinition;
             Name = workflowDefinition.Name;
@@ -36,8 +37,8 @@ namespace DevelApp.Workflow.Model
             {
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
                 CheckIfSagaStepBehaviorExists(toNode);
-                JsonSchema dataJsonSchema = LookupJsonSchemaFromKey(workflowActor, toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey);
-                _internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                JsonSchema dataJsonSchema = jsonSchemaDefinitionFactory.GetJsonSchemaDefinition(toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey, toNode.DataJsonSchemaVersion).JsonSchema;
+                _internalWorkflow.InsertFromStart(toNode.NodeKey, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
             }
 
             //Add all remaining edges with their nodes
@@ -48,8 +49,8 @@ namespace DevelApp.Workflow.Model
                 WorkflowDefinition.Edge edge = nonInsertedEdges.Where(f => _internalWorkflow.AlreadyAddedNodeKeys.Contains(f.FromNodeKey)).First();
                 WorkflowDefinition.Node toNode = workflowDefinition.Nodes.Where(n => n.NodeKey.Equals(edge.ToNodeKey)).FirstOrDefault();
                 CheckIfSagaStepBehaviorExists(toNode);
-                JsonSchema dataJsonSchema = LookupJsonSchemaFromKey(workflowActor, toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey);
-                _internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
+                JsonSchema dataJsonSchema = jsonSchemaDefinitionFactory.GetJsonSchemaDefinition(toNode.DataJsonSchemaModuleKey, toNode.DataJsonSchemaKey, toNode.DataJsonSchemaVersion).JsonSchema;
+                _internalWorkflow.Insert(edge.FromNodeKey, toNode.NodeKey, edge.Description, new NodeData(toNode.Description, dataJsonSchema, toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration));
 
                 nonInsertedEdges.Remove(edge);
             }
@@ -57,14 +58,9 @@ namespace DevelApp.Workflow.Model
             _internalWorkflow.FinishGraph();
         }
 
-        private JsonSchema LookupJsonSchemaFromKey(WorkflowActor workflowActor, KeyString dataJsonSchemaModuleKey, KeyString dataJsonSchemaKey)
-        {
-            return workflowActor.LookupJsonSchemaFromKey(dataJsonSchemaModuleKey, dataJsonSchemaKey);
-        }
-
         private void CheckIfSagaStepBehaviorExists(WorkflowDefinition.Node toNode)
         {
-            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration);
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(toNode.BehaviorModuleKey, toNode.BehaviorKey, toNode.BehaviorVersion, toNode.BehaviorConfiguration, Name);
             if(sagaStepBehavior == null)
             {
                 throw new WorkflowStartupException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {toNode.BehaviorKey}.{toNode.BehaviorVersion}");
@@ -73,7 +69,7 @@ namespace DevelApp.Workflow.Model
 
         public ISagaStepBehavior GetSagaStepBehaviorForNode(DoubleLinkedDirectedGraph<NodeData, EdgeData>.Node node)
         {
-            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(node.NodeData.BehaviorKey, node.NodeData.BehaviorVersion, node.NodeData.BehaviorConfiguration);
+            ISagaStepBehavior sagaStepBehavior = _sagaStepBehaviorFactory.GetSagaStepBehavior(node.NodeData.BehaviorModuleKey, node.NodeData.BehaviorKey, node.NodeData.BehaviorVersion, node.NodeData.BehaviorConfiguration, Name);
             if (sagaStepBehavior == null)
             {
                 throw new WorkflowRuntimeException($"Workflow {Name}.{Version} cannot find SagaStepBehavior {node.NodeData.BehaviorKey}.{node.NodeData.BehaviorVersion}");
@@ -123,7 +119,7 @@ namespace DevelApp.Workflow.Model
         /// </summary>
         public class NodeData
         { 
-            public NodeData(string description, JsonSchema dataJsonSchema, KeyString behaviorKey, SemanticVersionNumber behaviorVersion, JsonValue behaviorConfiguration)
+            public NodeData(string description, JsonSchema dataJsonSchema, KeyString behaviorModuleKey, KeyString behaviorKey, SemanticVersionNumber behaviorVersion, JsonValue behaviorConfiguration)
             {
                 Description = description;
                 BehaviorKey = behaviorKey;
@@ -141,6 +137,11 @@ namespace DevelApp.Workflow.Model
             /// The JsonSchema for the data of the current SagaStep
             /// </summary>
             JsonSchema DataJsonSchema { get; }
+
+            /// <summary>
+            /// The module which the behavior belongs to
+            /// </summary>
+            public KeyString BehaviorModuleKey { get; }
 
             /// <summary>
             /// The behavior of the sagaKey

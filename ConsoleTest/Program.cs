@@ -1,5 +1,5 @@
 ﻿using Akka.Actor;
-using DevelApp.Workflow.Messages;
+using DevelApp.Workflow.Core.Messages;
 using Serilog;
 using System;
 using System.Threading;
